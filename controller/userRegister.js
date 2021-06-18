@@ -1,8 +1,9 @@
 const router = require('express').Router();
+const crypto = require('crypto');
 const path = require('path');
 
 
-router.post('/register',(req,res)=>{
+router.post('/registerUser',(req,res)=>{
     const mysql = require('../database')();
     const connection = mysql.init();
     mysql.db_open(connection);
@@ -15,11 +16,16 @@ router.post('/register',(req,res)=>{
             if (err){
                 throw err;
             }else if (results.length<=0 && userpw == userpw2){
-                connection.query('INSERT INTO USERS (id, pw, uname) VALUES(?,?,?)',[userid,userpw,username], (err,data)=>{
-                    // pw 직접 삽입에서 해싱된 값 및 해싱키 값을 넣도록 해야함
-                    if (err){
-                        console.log(err);
-                    }
+                crypto.randomBytes(64,(err,buf)=>{
+                    crypto.pbkdf2(userpw,buf.toString('base64'),108326,64,'sha512',(err,key)=>{
+                        const hashedpw = key.toString('base64');
+                        const salt = buf.toString('base64');
+                        connection.query('INSERT INTO USERS (id, pw, uname, salt) VALUES(?,?,?,?)',[userid,hashedpw,username,salt], (err,data)=>{
+                            if (err){
+                                console.log(err);
+                            }
+                        });
+                    });
                 });
                 res.send(`<script type="text/javascript">alert("${username}님 환영합니다!"); document.location.href="/";</script>`);
             }else if (userpw!=userpw2){
@@ -32,12 +38,10 @@ router.post('/register',(req,res)=>{
             }else{
                 res.send('<script type="text/javascript">alert("이미 존재하는 유저입니다."); document.location.href="/register";</script>');
             }
-            connection.end();
         });
     }else{
         res.send('<script type="text/javascript">alert("정보를 모두 입력해주세요."); document.location.href="/register";</script>');
-        connection.end();
-    }   
+    }  
 })
 
 

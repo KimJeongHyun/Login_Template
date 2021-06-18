@@ -1,25 +1,34 @@
 const router = require('express').Router();
+const crypto = require('crypto');
 const path = require('path');
 
 
-router.post('/login',(req,res)=>{
+
+router.post('/loginUser',(req,res)=>{
     const mysql = require('../database')();
     const connection = mysql.init();
     mysql.db_open(connection);
     const userid = req.body.id;
     const userpw = req.body.pw;
-    connection.query('SELECT * FROM USERS WHERE id = ? AND pw = ? ',[userid, userpw], (err, results, fields) =>{
-        // pw 직접 비교에서 해싱된 값 비교로 변경해야함.
+    connection.query('SELECT PW, SALT FROM USERS WHERE id = ?',[userid], (err, results, fields) =>{
         if (err){
             throw err;
         }else if (results.length>0){
-            res.send('<script type="text/javascript">alert("환영합니다!");</script>');
+            crypto.pbkdf2(userpw,results[0].SALT,108326,64,'sha512',(err,key)=>{
+                const realPW = key.toString('base64');
+                if (realPW==results[0].PW){
+                    req.session.displayName=userid;
+                    res.send(`<script type="text/javascript">alert("환영합니다! ${req.session.displayName}님!"); document.location.href="/loginInfo"; </script> `);
+                }
+                else{
+                    res.send('<script>alert("로그인 정보가 일치하지 않습니다."); document.location.href="/login";</script>');
+                }
+            });
         }else{
             res.send('<script>alert("로그인 정보가 일치하지 않습니다."); document.location.href="/login";</script>');
         }
-        connection.end(); // DB 연결 끊기
     });
-    
+    connection.end();
 })
 
 
