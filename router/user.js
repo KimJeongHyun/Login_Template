@@ -2,7 +2,7 @@ const router = require('express').Router();
 const path = require('path');
 
 router.get('/login',(req,res)=>{
-    if (req.session.displayName!='Guest'){
+    if (typeof req.session.displayName!=='undefined'){
         res.send("<script>alert('이미 로그인되어있습니다.'); document.location.href='/loginInfo'</script>")
     }else{
         res.render("userHTML/login.html");
