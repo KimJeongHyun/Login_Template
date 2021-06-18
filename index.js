@@ -4,7 +4,7 @@ const path = require('path');
 const userRouter = require('./router/user.js');
 const userLogin = require('./controller/userLogin.js');
 const userRegister = require('./controller/userRegister.js');
-
+const userLogout = require('./controller/userLogout.js');
 
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
@@ -30,12 +30,15 @@ app.use(express.urlencoded({extended : true}))
 app.use(userRouter);
 app.use(userLogin);
 app.use(userRegister);
+app.use(userLogout);
+
+
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.get('/',(req,res)=>{
-    req.session.displayName = 'guest';
-    res.render("infoHTML/info.html");
+    req.session.displayName = 'Guest';
+    res.render('infoHTML/info.html');
 });
 
 app.listen(port, ()=>console.log(`Server Start. Port : ${port}`))

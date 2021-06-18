@@ -5,16 +5,16 @@
     <title>Index</title>
 </head>
     <body>
-    <h1>Hello!Login</h1>
-    <form action="/login">
-        <input type="submit" value="로그인">
+    <h1 id="Title">Hello! </h1>
+    <form action="/logout" method="post">
+        <input type="submit" value="로그아웃">
     </form>
-    <br>
-    <form action="/register">
-        <input type="submit" value="회원가입">
-    </form>
+    
     <script>
-        
+        var name = "<%=name%>";
+        var sessionSpan = document.createElement('span');
+        sessionSpan.innerHTML = name;
+        document.getElementById("Title").appendChild(sessionSpan);
     </script>
     </body>
 </html>
