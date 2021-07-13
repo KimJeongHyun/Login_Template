@@ -12,8 +12,6 @@
         <th>글쓴이</th>
         <th>제목</th>
         <th>내용</th>
-        <th>등록일</th>
-        <th>수정일</th>
         <th>조회수</th>
       </tr>
       <%
@@ -22,12 +20,11 @@
       %>
       <tr>
         <td>
-          <a href='post/<%=rows[i].idx%>'><%=rows[i].idx%></a></td>
+          <a href='post/<%=rows[i].idx%>'><%=rows[i].idx%></a>
+        </td>
         <td><%=rows[i].name%></td>
-        <td><%=rows[i].title%></td>
+        <td><%=rows[i].title%></a></td>
         <td><%=rows[i].content%></td>
-        <td><%=rows[i].regdate%></td>
-        <td><%=rows[i].modidate%></td>
         <td><%=rows[i].hit%></td>
       </tr>
       <%
@@ -35,7 +32,7 @@
       %>
 
     </table>
-    <button type="button" onclick="location.href='write/new'">글 쓰기</button>
+    <button type="button" onclick="location.href='../write/'">글 쓰기</button>
 
 
   </body>

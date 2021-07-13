@@ -8,6 +8,7 @@
     <h1><%= title %></h1>
     <table border="2">
       <tr>
+        <th>번호</th>
         <th>제목</th>
         <th>작성자</th>
         <th>내용</th>
@@ -17,7 +18,8 @@
       {
       %>
       <tr>
-        <td name='title'><%=rows[i].title%></td>
+        <td><%=rows[i].idx%></td>
+        <td><%=rows[i].title%></td>
         <td><%=rows[i].name%></td>
         <td><%=rows[i].content%></td>
       </tr>
@@ -25,7 +27,8 @@
       }
       %>
     </table>
-    <button type="button" onclick="location.href='modify'">글 수정</button>
+    <button type="button" onclick="location.href='../../update/<%=rows[0].idx%>'">글 수정</button>
+    <button type="button" onclick="location.href='../../delete/<%=rows[0].idx%>'">글 삭제</button>
     <button type="button" onclick="location.href='../'">뒤로 가기</button>
     <script>
     </script>
