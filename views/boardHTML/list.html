@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <table border="2">
+      <tr>
+        <th>번호</th>
+        <th>글쓴이</th>
+        <th>제목</th>
+        <th>내용</th>
+        <th>등록일</th>
+        <th>수정일</th>
+        <th>조회수</th>
+      </tr>
+      <%
+      for(var i = 0; i<rows.length; i++)
+      {
+      %>
+      <tr>
+        <td>
+          <a href='post/<%=rows[i].idx%>'><%=rows[i].idx%></a></td>
+        <td><%=rows[i].name%></td>
+        <td><%=rows[i].title%></td>
+        <td><%=rows[i].content%></td>
+        <td><%=rows[i].regdate%></td>
+        <td><%=rows[i].modidate%></td>
+        <td><%=rows[i].hit%></td>
+      </tr>
+      <%
+      }
+      %>
+
+    </table>
+    <button type="button" onclick="location.href='write/new'">글 쓰기</button>
+
+
+  </body>
+</html>

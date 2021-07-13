@@ -20,5 +20,4 @@ router.get('/loginInfo',(req,res)=>{
 })
 
 
-
 module.exports = router;
