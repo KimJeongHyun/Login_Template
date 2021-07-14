@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <table style="width:80vw; height:80vh; padding-left:50px;" frame=void>
+      
+      <%
+      for(var i = 0; i<rows.length; i++)
+      {
+      %>
+      
+      <tr>
+        <td colspan="2" style="height:10%" ><h1><strong><%=rows[i].title%></strong></h1></td>
+      </tr>
+      <tr>
+        <td><%=rows[i].nick%> 조회수: <%=rows[i].hit%> 추천수: <%=rows[i].recommend%></td>
+      </tr>
+      <tr style="height:100%;">
+        <td colspan="2" style="vertical-align:top; padding-top:20px;"><%=rows[i].content%></td>
+      </tr>
+        
+      <%
+      }
+      %>
+      <tr>
+        <td style="text-align:right;">
+          <a href="/board/list">목록</a>
+          <a href="/recommend/<%=rows[0].idx%>"> 추천</a>
+        </td>
+      </tr>
+    </table>
+    
+    
+    <script>
+    </script>
+  </body>
+</html>

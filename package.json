@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.6",
     "express-session": "^1.17.2",
+    "jsdom": "^16.6.0",
     "mysql": "^2.18.1",
     "path": "^0.12.7",
     "sha256": "^0.2.0"

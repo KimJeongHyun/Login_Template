@@ -5,35 +5,40 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <table border="2">
-      <tr>
-        <th>번호</th>
-        <th>글쓴이</th>
-        <th>제목</th>
-        <th>내용</th>
-        <th>조회수</th>
-      </tr>
-      <%
-      for(var i = 0; i<rows.length; i++)
-      {
-      %>
-      <tr>
-        <td>
-          <a href='post/<%=rows[i].idx%>'><%=rows[i].idx%></a>
-        </td>
-        <td><%=rows[i].name%></td>
-        <td><%=rows[i].title%></a></td>
-        <td><%=rows[i].content%></td>
-        <td><%=rows[i].hit%></td>
-      </tr>
-      <%
-      }
-      %>
-
-    </table>
-    <button type="button" onclick="location.href='../write/'">글 쓰기</button>
-
-
+    <nav>
+      <ul class="nav-container" style="display:flex; flex-direction:row; width:100%; margin:0; padding:0; list-style-type: none;">
+        <li class="nav-item" style="padding-top:20px;">
+          <a href="/info" style="text-decoration:none; color:black;">Info</a>
+        </li>
+      </ul>
+    </nav>
+    <div style="text-align:center; padding-top:2%;">
+      <h1><%= title %></h1>
+      <table style="margin:auto; width:50%">
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>글쓴이</th>
+          
+        </tr>
+        <%
+        for(var i = 0; i<rows.length; i++)
+        {
+        %>
+        <tr>
+          <td>
+            <%=rows[i].idx%>
+          </td>
+          
+          <td><a href='post/<%=rows[i].idx%>'><%=rows[i].title%></a></td>
+          <td><%=rows[i].nick%></td>
+        </tr>
+        <%
+        }
+        %>
+  
+      </table>
+      <button type="button" onclick="location.href='../write/'" style="margin-top:50px;">글 쓰기</button>
+    </div>
   </body>
 </html>

@@ -45,7 +45,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.get('/',(req,res)=>{
-    res.render('infoHTML/info.html');
+    res.render('infoHTML/index.html');
 });
 
 app.listen(port, ()=>console.log(`Server Start. Port : ${port}`))

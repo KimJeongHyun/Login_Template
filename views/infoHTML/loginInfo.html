@@ -5,16 +5,13 @@
     <title>Index</title>
 </head>
     <body>
-    <h1 id="Title">Hello! </h1>
+    <h1 id="Title">Hello! <%=name%></h1>
     <form action="/logout" method="post">
         <input type="submit" value="로그아웃">
     </form>
-    
-    <script>
-        var name = "<%=name%>";
-        var sessionSpan = document.createElement('span');
-        sessionSpan.innerHTML = name;
-        document.getElementById("Title").appendChild(sessionSpan);
-    </script>
+    <br>
+    <form action="/board/list">
+        <input type="submit" value="게시판">
+    </form>
     </body>
 </html>

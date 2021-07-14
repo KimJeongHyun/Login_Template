@@ -10,15 +10,15 @@ router.post('/loginUser',(req,res)=>{
     mysql.db_open(connection);
     const userid = req.body.id;
     const userpw = req.body.pw;
-    connection.query('SELECT PW, SALT FROM USERS WHERE id = ?',[userid], (err, results, fields) =>{
+    connection.query('SELECT pw, salt, nick FROM USERS WHERE id = ?',[userid], (err, results) =>{
         if (err){
             throw err;
         }else if (results.length>0){
-            crypto.pbkdf2(userpw,results[0].SALT,108326,64,'sha512',(err,key)=>{
+            crypto.pbkdf2(userpw,results[0].salt,108326,64,'sha512',(err,key)=>{
                 const realPW = key.toString('base64');
-                if (realPW==results[0].PW){
+                if (realPW==results[0].pw){
                     req.session.displayName=userid;
-                    res.render('infoHTML/loginInfo.html',{name:req.session.displayName});
+                    res.render('infoHTML/loginInfo.html',{name:results[0].nick});
                     //res.send(`<script type="text/javascript">alert("환영합니다! ${req.session.displayName}님!"); document.location.href="/loginInfo"; </script> `);
                 }
                 else{
