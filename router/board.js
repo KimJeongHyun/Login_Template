@@ -1,36 +1,42 @@
 const express = require('express');
 const router = express.Router();
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
 const mysql = require('../database')();
 const connection = mysql.init();
 mysql.db_open(connection);
 
 router.get('/board/list',function (req,res,next) {
   res.redirect('/board/list/1')// /board로 접속요청이 들어왔을 때 1페이지로 자동으로 이동하도록 리다이렉트 해줍니다.
+  req.session.refresh = true; // 무한 새로고침으로 조회수 폭증을 막는 세션 값
+  console.log(req.session.refresh);
 })
 
 router.get('/board/list/:page', function(req, res, next) {
-  var query = connection.query('SELECT idx, nick, title, content, hit FROM board',function(err,rows){
-    if(err) console.log(err)        // 만약 에러값이 존재한다면 로그에 표시합니다.
-    res.render('boardHTML/list.html', { title:'Board List',rows: rows }); // view 디렉토리에 있는 list 파일로 이동합니다.
-  });
+  req.session.refresh = true;
+  const page = req.params.page;
+  const sql = 'SELECT idx, nick, title, content, hit FROM board ORDER BY idx DESC'; // 페이징 포스트가 최근 작성된 것부터 보이도록 DESC 처리.
+  const query = connection.query(sql,function(err,rows){
+    if (err) console.log(err);
+    res.render('boardHTML/page.html',{title:'게시판 리스트',rows:rows, page:page, length:rows.length-1, page_num:10});
+  })
 });
 
 router.get('/board/list/post/:page',function(req,res,next){
   const page = req.params.page;
-  var query = connection.query('SELECT idx, title, name, nick, content, hit, recommend FROM board where idx='+page,function(err,rows){
+  const query = connection.query('SELECT idx, title, name, nick, content, hit, recommend FROM board where idx='+page,function(err,rows){
     if (err) console.log(err)
     if (rows[0].name==req.session.displayName){
       res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows});
     }else{
       res.render('boardHTML/postGuest.html',{title:rows[0].title,rows:rows});
     }
-    var query = connection.query('UPDATE board SET hit=hit+1 WHERE idx='+page, function(err,rows){
-      if (err) console.log(err);
-    })
+    if (req.session.refresh==true){
+      const query = connection.query('UPDATE board SET hit=hit+1 WHERE idx='+page, function(err,rows){
+        if (err) console.log(err);
+      })
+    }
+    req.session.refresh=false; // 조회수 증가 후에는 새로고침 세션 값을 false로 돌려 post에서 update가 발생하지 않도록 방지한다.
+    //SET @COUNT =0; UPDATE board SET board.idx = @COUNT:=@COUNT+1; 요걸 쓰면 AUTO_INCREMENT 속성을 초기화할 수 있다.
   })
 })
 

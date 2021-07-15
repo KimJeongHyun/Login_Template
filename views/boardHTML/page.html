@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <nav>
+    <nav> <% // 상단 메뉴바 %>
       <ul class="nav-container" style="display:flex; flex-direction:row; width:100%; margin:0; padding:0; list-style-type: none;">
         <li class="nav-item" style="padding-top:20px;">
           <a href="/info" style="text-decoration:none; color:black;">Info</a>
@@ -22,21 +22,34 @@
           
         </tr>
         <%
-        for(var i = 0; i<rows.length; i++)
-        {
+        for(var i = (page * page_num) - page_num; i < (page * page_num); i++) {
+          if (i>length){
+            break; // i가 데이터 갯수보다 많아지면 반복문을 나간다.
+          }else{
+                  // 그렇지 않다면 데이터를 지속적으로 보낸다.
+          
         %>
         <tr>
           <td>
             <%=rows[i].idx%>
           </td>
-          
           <td><a href='post/<%=rows[i].idx%>'><%=rows[i].title%></a></td>
           <td><%=rows[i].nick%></td>
         </tr>
-        <%
+        <%}
         }
         %>
-  
+        <tr>
+          <td colspan="3" style="padding-top:30px;">
+              <%
+              for(var j = 0; j < rows.length / page_num; j++){
+              %>
+              [<a href="/board/list/<%= j + 1 %>"><%= j + 1 %></a>]
+              <%
+              }
+              %>
+          </td>
+      </tr>
       </table>
       <button type="button" onclick="location.href='../write/'" style="margin-top:50px;">글 쓰기</button>
     </div>
