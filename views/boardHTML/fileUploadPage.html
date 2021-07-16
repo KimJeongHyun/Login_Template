@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>파일 업로드</title>
+ 
+</head>
+<body>
+    <br>
+    <b><font size="5" color="gray">파일 업로드</font></b>
+    <br><br>
+    <form action="/upload" enctype="multipart/form-data" method="post">
+        <input type="file" name="img" value="파일 선택" id="imgFile">
+        <button type="submit">업로드</button>
+    </form>
+    <br><br>
+    <input type="button" value="창닫기" onclick="setImgText()">
+</body>
+<script>
+    function setImgText(){
+        const str = document.getElementById('imgFile').value;
+        opener.document.getElementById('sInput').innerText=str.slice(12,str.length);
+        window.close();
+    }
+</script>
+</html>

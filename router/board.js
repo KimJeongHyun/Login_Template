@@ -8,7 +8,6 @@ mysql.db_open(connection);
 router.get('/board/list',function (req,res,next) {
   res.redirect('/board/list/1')// /board로 접속요청이 들어왔을 때 1페이지로 자동으로 이동하도록 리다이렉트 해줍니다.
   req.session.refresh = true; // 무한 새로고침으로 조회수 폭증을 막는 세션 값
-  console.log(req.session.refresh);
 })
 
 router.get('/board/list/:page', function(req, res, next) {
@@ -17,7 +16,16 @@ router.get('/board/list/:page', function(req, res, next) {
   const sql = 'SELECT idx, nick, title, content, hit FROM board ORDER BY idx DESC'; // 페이징 포스트가 최근 작성된 것부터 보이도록 DESC 처리.
   const query = connection.query(sql,function(err,rows){
     if (err) console.log(err);
-    res.render('boardHTML/page.html',{title:'게시판 리스트',rows:rows, page:page, length:rows.length-1, page_num:10});
+    if (rows.length==0){
+      const idxInit = 'ALTER TABLE board AUTO_INCREMENT=1;'
+      const idxInitQuery = connection.query(idxInit,function(err,rows){
+        if (err) console.log(err);
+      })
+      res.render('boardHTML/pageEmpty.html',{title:'게시판 리스트',lastidx:1});
+    }else{
+      res.render('boardHTML/page.html',{title:'게시판 리스트',rows:rows, page:page, length:rows.length-1, page_num:10, lastidx:rows[0].idx+1});
+    }
+    
   })
 });
 
@@ -40,38 +48,51 @@ router.get('/board/list/post/:page',function(req,res,next){
   })
 })
 
-router.get('/board/write/',function(req,res,next){
-  if (typeof req.session.displayName!=='undefined'){
-    res.render('boardHTML/write.html');
-  }else{
-    res.send("<script>alert('먼저 로그인을 해주시기 바랍니다'); document.location.href='/board/list'</script>")
-  }
+router.get('/board/write/:idx',function(req,res,next){
+    req.session.writeIdx = req.params.idx;
+    res.render('boardHTML/write.html',{id:req.params.idx});
 })
 
 router.post('/insert',(req,res)=>{
-  const title = req.body.title;
-  const content = req.body.content;
-  const author = req.session.displayName;
-  if (title.length==0 || content.length==0){
-    res.send("<script>alert('제목 또는 내용에 아무것도 작성되지 않았습니다.'); document.location.href='/list/write/new'</script>")
-  }
-  else{
-    const authSql = 'SELECT nick FROM users WHERE id=?';
-    const insertSql = 'INSERT INTO board (title, content, name, regdate, modidate, nick) VALUES(?,?,?,NOW(),NOW(),?)'
-    const authQuery = connection.query(authSql,[author],function(err,rows){
-      if (err){
-        console.log(err);
-      }else{
-        const insertQuery=connection.query(insertSql,[title,content,author,rows[0].nick],function(err,rows){
-          if (err){
-            console.log(err);
-          }else{
-            res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
-          }
-        })
-      }
-    })
-    
+  if (typeof req.session.displayName!=='undefined'){
+    const title = req.body.title;
+    const content = req.body.content;
+    const author = req.session.displayName;
+    if (title.length==0 || content.length==0){
+     res.send("<script>alert('제목 또는 내용에 아무것도 작성되지 않았습니다.'); document.location.href='/list/write/new'</script>")
+    }
+    else{
+      const selSql = 'SELECT idx FROM board';
+      const idxInit = 'ALTER TABLE board AUTO_INCREMENT=?;'
+      const authSql = 'SELECT nick FROM users WHERE id=?';
+      const insertSql = 'INSERT INTO board (title, content, name, regdate, modidate, nick) VALUES(?,?,?,NOW(),NOW(),?)'
+      const selQuery = connection.query(selSql, function(err,rows){
+        if (err){
+          console.log(err);
+        }else{
+          const initQuery = connection.query(idxInit,[rows.length], function(err,rows){
+            if (err) console.log(err);
+          })
+        }
+      })
+      const authQuery = connection.query(authSql,[author],function(err,rows){
+        if (err){
+          console.log(err);
+        }else{
+          const insertQuery=connection.query(insertSql,[title,content,author,rows[0].nick],function(err,rows){
+            if (err){
+              console.log(err);
+            }else{
+              res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
+              req.session.writeIdx="";
+            }
+          })
+        }
+      })
+    }
+  }else{
+    res.send("<script>alert('비정상적인 접근입니다.'); document.location.href='/info'</script>")
+    req.session.writeIdx="";
   }
 })
 
@@ -131,5 +152,6 @@ router.get('/recommend/:idx',(req,res)=>{
     }
   })
 })
+
 
 module.exports = router;
