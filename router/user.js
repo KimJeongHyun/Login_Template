@@ -1,7 +1,13 @@
 const router = require('express').Router();
 const path = require('path');
 
-
+router.get('/info',(req,res)=>{
+    if (typeof req.session.displayName!=='undefined'){
+        res.send("<script>document.location.href='/loginInfo'</script>")
+    }else{
+        res.render("infoHTML/info.html");
+    }
+})
 
 router.get('/login',(req,res)=>{
     if (typeof req.session.displayName!=='undefined'){
@@ -14,13 +20,7 @@ router.get('/login',(req,res)=>{
 router.get('/register',(req,res)=>{
     res.render("userHTML/register.html");
 })
-router.get('/info',(req,res)=>{
-    if (typeof req.session.displayName!=='undefined'){
-        res.send("<script>document.location.href='/loginInfo'</script>")
-    }else{
-        res.render("infoHTML/info.html");
-    }
-})
+
 router.get('/loginInfo',(req,res)=>{
     const mysql = require('../database')();
     const connection = mysql.init();
@@ -33,6 +33,5 @@ router.get('/loginInfo',(req,res)=>{
     })
     
 })
-
 
 module.exports = router;

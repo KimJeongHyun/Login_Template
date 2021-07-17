@@ -3,6 +3,16 @@ const crypto = require('crypto');
 const path = require('path');
 
 
+router.get('/popup/jusoPopup', (req, res) => {
+    res.render('userHTML/jusoPopup.html');
+  });
+  
+  router.post('/popup/jusoPopup', (req, res) => {
+    res.locals = req.body;
+    res.render('userHTML/jusoPopup.html');
+  });
+  
+
 router.post('/registerUser',(req,res)=>{
     const mysql = require('../database')();
     const connection = mysql.init();
@@ -12,6 +22,24 @@ router.post('/registerUser',(req,res)=>{
     const userpw2 = req.body.pw2;
     const username = req.body.uname;
     const nickname = req.body.nickname;
+    let birth = req.body.birth;
+    const mailID = req.body.mailID;
+    const mailISP = req.body.mailISPInserted;
+    let mailAddress = mailID+'@'+mailISP;
+    let phone = req.body.phonePrefix+req.body.phoneInfix+req.body.phonePostfix;
+    let address = req.body.roadAddrPart1 + '/' + req.body.addrDetail + '/' + req.body.zipNo;
+    
+
+    if (birth==''){
+        birth=null;
+    }else if(mailID=='' || mailISP==''){
+        mailAddress=null;
+    }else if(req.body.roadAddrPart1=='' && req.body.addrDetail=='' && req.body.zipNo==''){
+        address=null;
+    }else if(phone==''){
+        phone=null;
+    }
+
     if (userid && userpw && userpw2 && username && nickname){
         connection.query('SELECT * FROM USERS WHERE id = ? OR nick = ?',[userid,nickname], (err, results, fields) =>{
             if (err){
@@ -21,7 +49,7 @@ router.post('/registerUser',(req,res)=>{
                     crypto.pbkdf2(userpw,buf.toString('base64'),108326,64,'sha512',(err,key)=>{
                         const hashedpw = key.toString('base64');
                         const salt = buf.toString('base64');
-                        connection.query('INSERT INTO USERS (id, pw, uname, nick, salt) VALUES(?,?,?,?,?)',[userid,hashedpw,username,nickname,salt], (err,data)=>{
+                        connection.query('INSERT INTO USERS (id, pw, uname, birth, mail, phone, address, nick, salt) VALUES(?,?,?,?,?,?,?,?,?)',[userid,hashedpw,username,birth,mailAddress,phone,address,nickname,salt], (err,data)=>{
                             if (err){
                                 console.log(err);
                             }

@@ -5,15 +5,22 @@
     <title>JOIN</title>
 </head>
     <body>
-    <h1 style="width:30%; min-width:300px;">Join my website!</h1>
+        <nav> <% // 상단 메뉴바 %>
+            <ul class="nav-container" style="display:flex; flex-direction:row; width:100%; margin:0; padding:0; list-style-type: none;">
+              <li class="nav-item" style="padding-top:20px; padding-left:20px">
+                <a href="/info" style="text-decoration:none; color:black;">Info</a>
+              </li>
+            </ul>
+          </nav>
+    <h1 style="width:50%; min-width:300px;">Join my website!</h1>
     <form action="/registerUser" method="post">
-        <table style="width:30%; min-width:250px;">
+        <table style="width:50%; min-width:500px;">
             <tr>
                 <td>
                     ID
                 </td>
                 <td style="margin-left:10%;">
-                    <input style="border:none; width:100%" type="text" name="id" placeholder="ID를 입력해주세요">
+                    <input style="border:none; width:100%" type="text" name="id" placeholder="ID를 입력해주세요" required>
                 </td>
             </tr>
             <tr>
@@ -21,7 +28,7 @@
                     PW
                 </td>
                 <td style="margin-left:10%;"> 
-                    <input style="border:none; width:100%" type="password" name="pw" placeholder="비밀번호를 입력해주세요">
+                    <input style="border:none; width:100%" type="password" name="pw" placeholder="비밀번호를 입력해주세요" required>
                 </td>
             </tr>
             <tr>
@@ -29,7 +36,7 @@
                     PW 확인
                 </td>
                 <td style="margin-left:10%;">
-                    <input style="border:none; width:100%" type="password" name="pw2" placeholder="다시 비밀번호를 입력해주세요">
+                    <input style="border:none; width:100%" type="password" name="pw2" placeholder="다시 비밀번호를 입력해주세요" required>
                 </td>
             </tr>
             <tr>
@@ -37,7 +44,7 @@
                     이름
                 </td>
                 <td style="margin-left:10%;">
-                    <input style="border:none; width:100%" type="text" name="uname" placeholder="이름을 입력해주세요">
+                    <input style="border:none; width:100%" type="text" name="uname" placeholder="이름을 입력해주세요" required>
                 </td>
             </tr>
             <tr>
@@ -45,7 +52,82 @@
                     닉네임
                 </td>
                 <td style="margin-left:10%;">
-                    <input style="border:none; width:100%" type="text" name="nickname" placeholder="닉네임을 입력해주세요">
+                    <input style="border:none; width:100%" type="text" name="nickname" placeholder="닉네임을 입력해주세요" required>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    생일
+                </td>
+                <td style="margin-left:10%;">
+                    <input style="border:0.2; width:30%" type="date" name="birth">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    이메일
+                </td>
+                <td style="margin-left:10%;">
+                    <input style="border:none; width:20%" type="text" name="mailID"> @
+                    <input style="border:none; width:20%" type="text" name="mailISPInserted" id="mailISP" readonly>
+                    <select name="mailISPSelect" onchange="handleOnChangeMail(this)">
+                        <option value="none" selected>=== 선택 ===</option>
+                        <option value="daum.net">daum</option>
+                        <option value="naver.com">naver</option>
+                        <option value="gmail.com">google</option>
+                        <option value="etc">기타 이메일</option>
+                      </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    전화번호
+                </td>
+                <td>
+                    <input style="border:none; width:5%" type="text" name="phonePrefix" id="phonePrefix" onkeypress="onlyNumber();" readonly>
+                    <select name="phonePrefixSelect"  onchange="handleOnChangePhone(this)">
+                        <option value="none" selected>=== 선택 ===</option>
+                        <option value="etc">직접 입력</option>
+                        <option value="02">02</option>
+                        <option value="031">031</option>
+                        <option value="032">032</option>
+                        <option value="033">033</option>
+                        <option value="041">041</option>
+                        <option value="042">042</option>
+                        <option value="043">043</option>
+                        <option value="044">044</option>
+                        <option value="051">051</option>
+                        <option value="052">052</option>
+                        <option value="053">053</option>
+                        <option value="054">054</option>
+                        <option value="055">055</option>
+                        <option value="061">061</option>
+                        <option value="062">062</option>
+                        <option value="063">063</option>
+                        <option value="064">064</option>
+                        <option value="070">070</option>
+                        <option value="010">010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                      </select>
+                      -
+                      <input style="border:0.2; width:10%" type="text" name="phoneInfix" id="phoneInfix" maxlength='4' onkeypress="onlyNumber();">
+                      -
+                      <input style="border:0.2; width:10%" type="text" name="phonePostfix" id="phonePostfix" maxlength='4' onkeypress="onlyNumber();">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    주소 입력
+                </td>
+                <td>
+                    <input name="roadAddrPart1" type="text" placeholder="도로명주소" />
+                    <input name="addrDetail" type="text" placeholder="고객입력 상세주소" />
+                    <input name="zipNo" type="text" placeholder="우편번호" />
+                    <input type="button" value="주소검색" onclick="goPopup()" />
                 </td>
             </tr>
         </table>
@@ -53,4 +135,73 @@
     </form>
 
     </body>
+    <script>
+        function handleOnChangeMail(e){
+            const value = e.value;
+            const target = document.getElementById('mailISP');
+            if (value=='daum.net' || value=='naver.com' || value=='gmail.com'){
+                document.getElementById('mailISP').value = value;
+                target.setAttribute('readonly',true);
+            }
+            if (value=='etc'){
+                document.getElementById('mailISP').value = "";
+                target.removeAttribute('readonly');
+            }
+        }
+        function handleOnChangePhone(e){
+            const value = e.value;
+            const target = document.getElementById('phonePrefix');
+            
+            if (value=='etc'){
+                document.getElementById('phonePrefix').value = "";
+                target.removeAttribute('readonly');
+            }else{
+                document.getElementById('phonePrefix').value = value;
+                target.setAttribute('readonly',true);
+            }
+        }
+        function onlyNumber(){
+            if((event.keyCode<48)||(event.keyCode>57))
+                event.returnValue=false;
+        }
+        function goPopup() {
+        var pop = window.open(
+          '/popup/jusoPopup',
+          'pop',
+          'width=570,height=420, scrollbars=yes, resizable=yes'
+        );
+      }
+      function jusoCallBack(
+        roadFullAddr,
+        roadAddrPart1,
+        addrDetail,
+        roadAddrPart2,
+        engAddr,
+        jibunAddr,
+        zipNo,
+        admCd,
+        rnMgtSn,
+        bdMgtSn,
+        detBdNmList,
+        bdNm,
+        bdKdcd,
+        siNm,
+        sggNm,
+        emdNm,
+        liNm,
+        rn,
+        udrtYn,
+        buldMnnm,
+        buldSlno,
+        mtYn,
+        lnbrMnnm,
+        lnbrSlno,
+        emdNo
+      ) {
+        // 팝업페이지에서 주소입력한 정보를 받아서, 현 페이지에 정보를 등록합니다.
+        document.getElementsByName('roadAddrPart1')[0].value=roadAddrPart1;
+        document.getElementsByName('addrDetail')[0].value=addrDetail;
+        document.getElementsByName('zipNo')[0].value=zipNo;
+      }
+    </script>
 </html>

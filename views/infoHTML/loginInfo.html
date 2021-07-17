@@ -5,13 +5,22 @@
     <title>Index</title>
 </head>
     <body>
-    <h1 id="Title">Hello! <%=name%></h1>
-    <form action="/logout" method="post">
-        <input type="submit" value="로그아웃">
-    </form>
-    <br>
-    <form action="/board/list">
-        <input type="submit" value="게시판">
-    </form>
+        <nav> <% // 상단 메뉴바 %>
+            <ul class="nav-container" style="display:flex; flex-direction:row; width:100%; margin:0; padding:0; list-style-type: none;">
+              <li class="nav-item" style="padding-top:20px; padding-left:20px">
+                <a href="/info" style="text-decoration:none; color:black;">Info</a>
+              </li>
+            </ul>
+          </nav>
+        <h1 id="Title">Hello! <%=name%></h1>
+        <form action="/logout" method="post">
+            <input type="submit" value="로그아웃">
+        </form>
+        <br>
+        <form action="/board/list">
+            <input type="submit" value="게시판">
+        </form>
+        <br>
+        <a href="/myProfile"><input type="button" value="My Page"></a>
     </body>
 </html>

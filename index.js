@@ -8,6 +8,7 @@ const boardRouter = require('./router/board.js');
 const userLogin = require('./controller/userLogin.js');
 const userRegister = require('./controller/userRegister.js');
 const userLogout = require('./controller/userLogout.js');
+const userProfile = require('./controller/userProfile.js');
 const fileUpload = require('./controller/fileUpload.js');
 
 
@@ -39,10 +40,11 @@ app.use(express.urlencoded({extended : true}))
 app.use(userRouter);
 app.use(boardRouter);
 
-// 유저 로그인, 회원가입 라우터
+// 유저 로그인, 회원가입, 마이페이지 라우터
 app.use(userLogin);
 app.use(userRegister);
 app.use(userLogout);
+app.use(userProfile);
 
 // 파일 업로드 라우터
 app.use(fileUpload);
