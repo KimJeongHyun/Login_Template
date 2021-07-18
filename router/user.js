@@ -18,7 +18,11 @@ router.get('/login',(req,res)=>{
     
 })
 router.get('/register',(req,res)=>{
-    res.render("userHTML/register.html");
+    if (typeof req.session.displayName!=='undefined'){
+        res.send("<script>alert('이미 로그인되어있습니다.'); document.location.href='/info'</script>")
+    }else{
+        res.render("userHTML/register.html");
+    }
 })
 
 router.get('/loginInfo',(req,res)=>{
