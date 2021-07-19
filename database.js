@@ -1,14 +1,16 @@
 const mysql = require('mysql'); 
+const configF = require('./config/db_config.json');
+const configL = require('./config/db_configLocal.json')
 
 module.exports = function () {
     return {
       init: function () {
-        return mysql.createConnection({
-          host: 'localhost',
+        return mysql.createPool({
+          host: configL.host,
           port: '3306',
-          user: 'root',
-          password: '#original3480',
-          database: 'TEST_DB'
+          user: configL.user,
+          password: configL.password,
+          database: configL.database
         })
       },
       
@@ -23,3 +25,15 @@ module.exports = function () {
       }
     }
   };
+
+   /*
+  init: function () {
+        return mysql.createConnection({
+          host: configL.host,
+          port: '3306',
+          user: configL.user,
+          password: configL.password,
+          database: configL.database
+        })
+      },
+  */

@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+const configF = require('./config/db_config.json');
+const configL = require('./config/db_configLocal.json');
+
 const userRouter = require('./router/user.js');
 const boardRouter = require('./router/board.js');
 
@@ -10,26 +13,27 @@ const userRegister = require('./controller/userRegister.js');
 const userLogout = require('./controller/userLogout.js');
 const userProfile = require('./controller/userProfile.js');
 const fileUpload = require('./controller/fileUpload.js');
-
+const filterSearch = require('./controller/filterSearch.js');
 
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 
-
+// 세션. 나중에 모듈화해도 좋을듯.
 app.use(session({
-    secret              : '#CLASSIC@ORIGINAL!',
+    secret              : configF.secret,
     resave              : false,
     saveUninitialized   : true,
     secure              : true,
     HttpOnly            : true,
     store               : new MySQLStore({
-        host    : 'localhost',
+        host    : configL.host,
         port    : 3306,
-        user    : 'root',
-        password: '#original3480',
-        database: 'TEST_DB'
+        user    : configL.user,
+        password: configL.password,
+        database: configL.database
     })
 }));
+
 
 const port = 5000;
 
@@ -49,7 +53,8 @@ app.use(userProfile);
 // 파일 업로드 라우터
 app.use(fileUpload);
 
-
+// 검색 필터 라우터
+app.use(filterSearch);
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');

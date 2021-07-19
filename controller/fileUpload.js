@@ -55,7 +55,6 @@ router.get('/uploadedFileDelete',(req,res)=>{
     }else{
         res.send("<script>alert('비정상적인 접근입니다.'); document.location.href='/info'</script>")
     }
-
 })
 
 

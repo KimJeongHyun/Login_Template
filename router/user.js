@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const path = require('path');
 
+const mysql = require('../database')();
+const conn = mysql.init();
+
 router.get('/info',(req,res)=>{
     if (typeof req.session.displayName!=='undefined'){
         res.send("<script>document.location.href='/loginInfo'</script>")
@@ -26,16 +29,16 @@ router.get('/register',(req,res)=>{
 })
 
 router.get('/loginInfo',(req,res)=>{
-    const mysql = require('../database')();
-    const connection = mysql.init();
-    mysql.db_open(connection);
     const id = req.session.displayName;
     const sql = 'SELECT nick FROM users WHERE id=?';
-    const query = connection.query(sql,[id],function(err,rows){
-        if (err) console.log(err);
-        res.render("infoHTML/loginInfo.html",{name:rows[0].nick});
+    conn.getConnection((err,connection)=>{
+        if (err) throw err;
+        const query = connection.query(sql,[id],function(err,rows){
+            if (err) console.log(err);
+            res.render("infoHTML/loginInfo.html",{name:rows[0].nick});
+            connection.release();
+        })
     })
-    
 })
 
 module.exports = router;

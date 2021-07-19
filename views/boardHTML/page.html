@@ -51,7 +51,26 @@
           </td>
       </tr>
       </table>
+      <br>
       <a href="../write/<%=lastidx%>" style="margin-top:50px"><input type="button" value="글 쓰기"></a>
-    </div>
+      <br><br>
+      <form action="/board/list/filterSelect" method="post">
+        <select name="positionSelect" onchange="handleOnChange(this)">
+          <option value="Title" selected>제목</option>
+          <option value="Author">작성자</option>
+          <option value="TitlePContent">제목+내용</option>
+        </select>
+        <input type="text" name="filterSearch" id="filterSearch" value="Title" readonly>
+        <input type="text" name="textContent">
+        <input type="submit" value="검색">
+      </form>
+    </div> 
   </body>
+  <script>
+    function handleOnChange(e){
+      const value = e.value;
+      const target = document.getElementById('filterSearch');
+      document.getElementById('filterSearch').value = value;
+    }
+  </script>
 </html>
