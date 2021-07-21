@@ -3,15 +3,20 @@
 <head>
     <meta charset="utf-8">
     <title>JOIN</title>
+    <link rel='stylesheet' href='../../stylesheets/style.css' />
 </head>
     <body>
         <nav> <% // 상단 메뉴바 %>
-            <ul class="nav-container" style="display:flex; flex-direction:row; width:100%; margin:0; padding:0; list-style-type: none;">
-              <li class="nav-item" style="padding-top:20px; padding-left:20px">
-                <a href="/info" style="text-decoration:none; color:black;">Info</a>
-              </li>
+            <ul class="nav-container">
+                <li class="nav-item">
+                  <a href="/info">Info</a>
+                  <ul>
+                    <li><a href="#">Info_1</a></li>
+                    <li><a href="#">Info_2</a></li>
+                  </ul>
+                </li>
             </ul>
-          </nav>
+        </nav>
     <h1 style="width:50%; min-width:300px;">Join my website!</h1>
     <form action="/registerUser" method="post">
         <table style="width:50%; min-width:500px;">
