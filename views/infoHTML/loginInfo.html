@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Index</title>
-    <link rel='stylesheet' href='../../stylesheets/style.css' />
+    <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
         <nav> <% // 상단 메뉴바 %>
@@ -17,15 +17,17 @@
             </li>
           </ul>
         </nav>
-        <h1 id="Title">Hello! <%=name%></h1>
-        <form action="/logout" method="post">
-            <input type="submit" value="로그아웃">
-        </form>
-        <br>
-        <form action="/board/list">
-            <input type="submit" value="게시판">
-        </form>
-        <br>
-        <a href="/myProfile"><input type="button" value="My Page"></a>
+        <div class="ContentField">
+          <h1 id="Title">Hello! <%=name%></h1>
+          <form action="/logout" method="post">
+              <input type="submit" value="로그아웃">
+          </form>
+          <br>
+          <form action="/board/list">
+              <input type="submit" value="게시판">
+          </form>
+          <br>
+          <a href="/myProfile"><input type="button" value="My Page"></a>
+        </div>
     </body>
 </html>

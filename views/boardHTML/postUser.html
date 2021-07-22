@@ -2,7 +2,7 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='../../stylesheets/style.css' />
+    <link rel='stylesheet' href='../../../css/style.css' />
   </head>
   <body>
     <nav> <% // 상단 메뉴바 %>
@@ -16,36 +16,41 @@
         </li>
       </ul>
     </nav>
-    <table style="width:80vw; height:80vh; padding-left:50px;" frame=void>
-      
-      <%
-      for(var i = 0; i<rows.length; i++)
-      {
-      %>
-      
-      <tr>
-        <td colspan="2" style=" height:10%" ><h1><strong><%=rows[i].title%></strong></h1></td>
-      </tr>
-      <tr>
-        <td><%=rows[i].nick%> 조회수: <%=rows[i].hit%> 추천수: <%=rows[i].recommend%></td>
-      </tr>
-      <tr style="height:100%;">
-        <td colspan="2" style="vertical-align:top; padding-top:20px;"><%=rows[i].content%></td>
-      </tr>
-        
-      <%
-      }
-      %>
-      <tr>
-        <td style="text-align:right;">
-          <a href="/board/list">목록</a>
-          <a href="../../update/<%=rows[0].idx%>">글 수정</a>
-          <a href="../../delete/<%=rows[0].idx%>">글 삭제</a>
-        </td>
-      </tr>
-    </table>
-    
-    <script>
-    </script>
+    <div class="ContentField">
+      <table style="width:80vw; height:80vh; padding-left:50px;" frame=void>
+        <%
+        for(var i = 0; i<rows.length; i++)
+        {
+        %>
+        <tr>
+          <td colspan="2" style="height:10%" ><h1><strong><%=rows[i].title%></strong></h1></td>
+        </tr>
+        <tr>
+          <td><%=rows[i].nick%> 조회수: <%=rows[i].hit%> 추천수: <%=rows[i].recommend%></td>
+        </tr>
+        <tr>
+          <%
+          for(var j =0; j<fileName.length; j++){
+          %>
+          <td style="height:10%"><a href="/fileDownload/<%=rows[i].idx%>/<%=fileName[j]%>"><%=fileName[j]%></a></td>
+          <%
+            }
+          %>
+        </tr>
+        <tr style="height:100%;">
+          <td colspan="<%=fileName.length%>" style="vertical-align:top; padding-top:20px;"><%=rows[i].content%></td>
+        </tr>
+        <%
+        }
+        %>
+        <tr>
+          <td colspan="<%=fileName.length%>" style="text-align:right;">
+            <a href="/board/list"><input type="button" value="목록"></a>
+            <a href="../../update/<%=rows[0].idx%>"><input type="button" value="글 수정"></a>
+            <a href="../../delete/<%=rows[0].idx%>"><input type="button" value="글 삭제"></a>
+          </td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>

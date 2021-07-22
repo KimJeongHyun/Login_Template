@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+app.use(express.static('public'));
+
 const configF = require('./config/db_config.json');
 const configL = require('./config/db_configLocal.json');
 
@@ -13,6 +15,7 @@ const userRegister = require('./controller/userRegister.js');
 const userLogout = require('./controller/userLogout.js');
 const userProfile = require('./controller/userProfile.js');
 const fileUpload = require('./controller/fileUpload.js');
+const fileDownload = require('./controller/fileDownload');
 const filterSearch = require('./controller/filterSearch.js');
 
 const session = require('express-session');
@@ -52,6 +55,9 @@ app.use(userProfile);
 
 // 파일 업로드 라우터
 app.use(fileUpload);
+
+// 파일 다운로드 라우터
+app.use(fileDownload);
 
 // 검색 필터 라우터
 app.use(filterSearch);

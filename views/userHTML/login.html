@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>JOIN</title>
-    <link rel='stylesheet' href='../../stylesheets/style.css' />
+    <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
         <nav> <% // 상단 메뉴바 %>
@@ -17,29 +17,30 @@
                 </li>
             </ul>
         </nav>
-    <h1 style="width:30%; min-width:250px;">Login Page</h1>
-    <form action="/loginUser" method="post">
-        <table style="width:30%; min-width:250px;">
-            <tr>
-                <td>
-                    ID
-                </td>
-                <td style="margin-left:10%;">
-                    <input style="border:none; width:100%" type="text" name="id" placeholder="ID를 입력해주세요">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    PW
-                </td>
-                <td style="margin-left:10%">
-                    <input style="border:none; width:100%" type="password" name="pw" placeholder="비밀번호를 입력해주세요">
-                </td>
-                
-            </tr>
-        </table>
-        <input style="margin-top:20px;"type="submit" value="로그인">
-    </form>
-
+        <div class="ContentField">
+            <h1 style="width:30%; min-width:250px;">Login Page</h1>
+            <form action="/loginUser" method="post">
+                <table style="width:30%; min-width:250px;">
+                    <tr>
+                        <td>
+                            ID
+                        </td>
+                        <td style="margin-left:10%;">
+                            <input style="border:none; width:100%" type="text" name="id" placeholder="ID를 입력해주세요">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            PW
+                        </td>
+                        <td style="margin-left:10%">
+                            <input style="border:none; width:100%" type="password" name="pw" placeholder="비밀번호를 입력해주세요">
+                        </td>
+                        
+                    </tr>
+                </table>
+                <input style="margin-top:20px;"type="submit" value="로그인">
+            </form>
+        </div>
     </body>
 </html>

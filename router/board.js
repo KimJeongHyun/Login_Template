@@ -35,25 +35,33 @@ router.get('/board/list/post/:page',function(req,res,next){
   const page = req.params.page;
   conn.getConnection((err,connection)=>{
     if (err) throw err;
-    const query = connection.query('SELECT idx, title, name, nick, content, hit, recommend FROM board where idx='+page,function(err,rows){
+    const query = connection.query('SELECT idx, title, name, nick, content, hit, recommend, uploadfilepath FROM board where idx='+page,function(err,rows){
       if (err) throw err
       const author = rows[0].name;
       const preRows = rows;
+      const filePath = rows[0].uploadfilepath;
+      let fileArray='';
+      if (filePath!=null){
+        fileArray = rows[0].uploadfilepath.split('+');
+        for (let i=0; i<fileArray.length; i++){
+          fileArray[i] = fileArray[i].split('\\')[2].split(';')[3];
+        }
+      }
       if (author==req.session.displayName){
-        res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows});
+        res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows, fileName:fileArray});
       }else{
         const recomSelSql = 'SELECT recomPost FROM users WHERE id=?';
         const recomSelQuery = connection.query(recomSelSql,[req.session.displayName],(err,rows)=>{
           if (err) throw err;
-          if (rows[0].recomPost==null){
-            res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows});
+          if (rows.length==0){
+            res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray});
           }else{
             const recomPosts = rows[0].recomPost;
             const recomPostsArray = recomPosts.split(';');
             if (recomPostsArray.includes(page)){
-              res.render('boardHTML/postGuestRecommended.html',{title:preRows[0].title,rows:preRows});
+              res.render('boardHTML/postGuestRecommended.html',{title:preRows[0].title,rows:preRows,fileName:fileArray});
             }else{
-              res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows});
+              res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray});
             }
           }          
         })
@@ -71,8 +79,12 @@ router.get('/board/list/post/:page',function(req,res,next){
 })
 
 router.get('/board/write/:idx',function(req,res,next){
+  if (typeof req.session.displayName!=='undefined'){
     req.session.writeIdx = req.params.idx;
     res.render('boardHTML/write.html',{id:req.params.idx});
+  }else{
+    res.send("<script>alert('로그인을 해주시기 바랍니다.'); window.history.back();</script>")
+  }
 })
 
 router.post('/insert',(req,res)=>{
@@ -80,6 +92,12 @@ router.post('/insert',(req,res)=>{
     const title = req.body.title;
     const content = req.body.content;
     const author = req.session.displayName;
+    let filepath = '';
+    if (typeof req.session.filepath=='undefined'){
+      filepath=null;
+    }else{
+      filepath=req.session.filepath;
+    }
     if (title.length==0 || content.length==0){
      res.send("<script>alert('제목 또는 내용에 아무것도 작성되지 않았습니다.'); document.location.href='/list/write/new'</script>")
     }
@@ -88,7 +106,7 @@ router.post('/insert',(req,res)=>{
       const idxInit = 'ALTER TABLE board AUTO_INCREMENT=?;' 
       //SET @COUNT =0; UPDATE board SET board.idx = @COUNT:=@COUNT+1; 요걸 쓰면 AUTO_INCREMENT 속성을 초기화할 수 있다.
       const authSql = 'SELECT nick FROM users WHERE id=?';
-      const insertSql = 'INSERT INTO board (title, content, name, regdate, modidate, nick) VALUES(?,?,?,NOW(),NOW(),?)'
+      const insertSql = 'INSERT INTO board (title, content, name, regdate, modidate, nick,uploadfilepath) VALUES(?,?,?,NOW(),NOW(),?,?)'
       conn.getConnection((err,connection)=>{
         if (err) throw err;
         const selQuery = connection.query(selSql, function(err,rows){
@@ -104,7 +122,7 @@ router.post('/insert',(req,res)=>{
           if (err){
             throw err;
           }else{
-            const insertQuery=connection.query(insertSql,[title,content,author,rows[0].nick],function(err,rows){
+            const insertQuery=connection.query(insertSql,[title,content,author,rows[0].nick,filepath],function(err,rows){
               if (err){
                 throw err;
               }else{
@@ -113,18 +131,22 @@ router.post('/insert',(req,res)=>{
               }
             })
           }
-        connection.release();
+          req.session.writeIdx='';
+          req.session.filepath='';
+          connection.release();
         })
       })     
     }
   }else{
     res.send("<script>alert('비정상적인 접근입니다.'); document.location.href='/info'</script>")
-    req.session.writeIdx="";
+    req.session.writeIdx='';
+    req.session.filepath='';
   }
 })
 
 router.get('/board/update/:idx',(req,res)=>{
   const idx = req.params.idx;
+  req.session.updateIdx = idx;
   conn.getConnection((err,connection)=>{
     if (err) throw err;
     const query = connection.query('SELECT idx, title, name, content FROM board WHERE idx='+idx, function(err,rows){
@@ -152,6 +174,7 @@ router.post('/board/update',(req,res)=>{
       connection.release();
     })
   })
+  req.session.updateIdx='';
 })
 
 router.get('/board/delete/:idx',(req,res)=>{
