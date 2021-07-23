@@ -51,9 +51,7 @@ router.post('/registerUser',(req,res)=>{
                             const hashedpw = key.toString('base64');
                             const salt = buf.toString('base64');
                             connection.query('INSERT INTO USERS (id, pw, uname, birth, mail, phone, address, nick, salt) VALUES(?,?,?,?,?,?,?,?,?)',[userid,hashedpw,username,birth,mailAddress,phone,address,nickname,salt], (err,data)=>{
-                                if (err){
-                                    console.log(err);
-                                }
+                                if (err) throw err;
                             });
                         });
                     });

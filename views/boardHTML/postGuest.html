@@ -34,14 +34,29 @@
           for(var j =0; j<fileName.length; j++){
           %>
           <td style="height:10%"><a href="/fileDownload/<%=rows[i].idx%>/<%=fileName[j]%>"><%=fileName[j]%></a></td>
+          
           <%
             }
           %>
         </tr>
+        <tr>
+          <%
+          for(var j =0; j<imgPaths.length; j++){
+          %>
+          <td id= 'imgs' style="height:10%" hidden><img src="../../../<%=imgPaths[j]%>"></a></td>
+          <%
+            }
+          %>
+        </tr>
+        <tr>
+          <td>
+            <input type="button" id="imageShowBtn" value="첨부된 이미지 보기" onclick="imageShow()">
+            <input type="button" id="imageHideBtn" value="이미지 닫기" onclick="imageHidden()" hidden>
+          </td>
+        </tr>
         <tr style="height:100%;">
           <td colspan="<%=fileName.length%>" style="vertical-align:top; padding-top:20px;"><%=rows[i].content%></td>
         </tr>
-          
         <%
         }
         %>
@@ -54,4 +69,16 @@
       </table>
     </div>
   </body>
+  <script>
+    function imageShow(){
+      document.getElementById('imageShowBtn').setAttribute('hidden','hidden');
+      document.getElementById('imageHideBtn').removeAttribute('hidden');
+      document.getElementById('imgs').removeAttribute('hidden');
+    }
+    function imageHidden(){
+      document.getElementById('imageShowBtn').removeAttribute('hidden');
+      document.getElementById('imageHideBtn').setAttribute('hidden','hidden');
+      document.getElementById('imgs').setAttribute('hidden','hidden');
+    }
+  </script>
 </html>

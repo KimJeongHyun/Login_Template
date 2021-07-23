@@ -34,7 +34,7 @@ router.get('/loginInfo',(req,res)=>{
     conn.getConnection((err,connection)=>{
         if (err) throw err;
         const query = connection.query(sql,[id],function(err,rows){
-            if (err) console.log(err);
+            if (err) throw err;
             res.render("infoHTML/loginInfo.html",{name:rows[0].nick});
             connection.release();
         })

@@ -9,7 +9,7 @@ router.get('/myProfile',(req,res)=>{
         conn.getConnection((err,connection)=>{
             if (err) throw err;
             const query = connection.query(sql,[req.session.displayName],function(err,rows){
-                if (err) console.log(err);
+                if (err) throw err;
                 if (rows[0].phone.slice(0,2)=='02' && rows[0].phone[2]!=' '){
                     rows[0].phone = '02 '+rows[0].phone.slice(2);
                 }
@@ -28,7 +28,7 @@ router.get('/myProfileEdit',(req,res)=>{
         conn.getConnection((err,connection)=>{
             if (err) throw err;
             const query = connection.query(sql,req.session.displayName,function(err,rows){
-                if (err) console.log(err);
+                if (err) throw err;
                 if (rows[0].phone.slice(0,2)=='02' && rows[0].phone[2]!=' '){
                     rows[0].phone = '02 '+rows[0].phone.slice(2);
                 }
@@ -66,7 +66,7 @@ router.post('/myProfileEditSubmit',(req,res)=>{
         const authQuery = connection.query(authSql,[req.session.displayName],function(err,rows){
             const updateSql = 'UPDATE users SET birth=?, mail=?, phone=?, address=? WHERE id = ?';
             const updateQuery = connection.query(updateSql,[birth,mailAddress,phone,address,req.session.displayName],function(err,rows){
-                if (err) console.log(err);
+                if (err) throw err;
                 res.send("<script>alert('업데이트되었습니다.'); document.location.href='/myProfile'</script>")
             })
             connection.release();

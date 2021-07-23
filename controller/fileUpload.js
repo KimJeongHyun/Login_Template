@@ -36,7 +36,6 @@ router.get('/fileUploadPage',(req,res)=>{
         connection.release();
     })
     req.session.filepath=filePath;
-    console.log(req.session.filepath);
     if (typeof req.session.displayName!=='undefined'){
         res.render('boardHTML/fileUploadPage.html');
     }else{
@@ -52,7 +51,6 @@ router.post('/upload',upload.single('img'),(req,res)=>{
         filePath+=req.session.filepath+'+'+req.file.path;
     }
     req.session.filepath=filePath;
-    console.log(req.session.filepath);
     if (typeof req.session.displayName!=='undefined'){
         if (typeof req.file=='undefined'){
             res.send("<script>alert('업로드한 파일이 없습니다.'); window.history.back()</script>")
@@ -75,7 +73,7 @@ router.get('/uploadedFileDelete',(req,res)=>{
                 if (item.includes(findStr)){
                     const filePath = dir+item;
                     fs.unlink(filePath,(err)=>{
-                        if (err) console.log(err);
+                        if (err) throw err;
                     })
                 }
             })

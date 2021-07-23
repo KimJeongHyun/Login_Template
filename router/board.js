@@ -4,6 +4,9 @@ const router = express.Router();
 const mysql = require('../database')();
 const conn = mysql.init();
 
+const fs = require('fs');
+const path = require('path');
+
 router.get('/board/list',function (req,res,next) {
   res.redirect('/board/list/1')// /board로 접속요청이 들어왔을 때 1페이지로 자동으로 이동하도록 리다이렉트 해줍니다.
   req.session.refresh = true; // 무한 새로고침으로 조회수 폭증을 막는 세션 값
@@ -41,27 +44,48 @@ router.get('/board/list/post/:page',function(req,res,next){
       const preRows = rows;
       const filePath = rows[0].uploadfilepath;
       let fileArray='';
+      let imgFilePath ='';
+      const checkExt = function(element){
+        const ext = element.slice(element.lastIndexOf('.'));
+        switch (ext){
+          case '.jpg' : 
+          case '.jpeg':
+          case '.gif':
+          case '.bmp':
+          case '.png':
+          case '.tif':
+          case '.tiff':
+            return true;
+          default:
+            return false;
+        }
+      }
       if (filePath!=null){
+        imgFilePath = rows[0].uploadfilepath.split('+');
+        imgFilePath=imgFilePath.filter((element)=>checkExt(element));
+        for (let i=0; i<imgFilePath.length; i++){
+          imgFilePath[i] = imgFilePath[i].slice(7);
+        }
         fileArray = rows[0].uploadfilepath.split('+');
         for (let i=0; i<fileArray.length; i++){
           fileArray[i] = fileArray[i].split('\\')[2].split(';')[3];
         }
       }
       if (author==req.session.displayName){
-        res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows, fileName:fileArray});
+        res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows, fileName:fileArray,imgPaths:imgFilePath});
       }else{
         const recomSelSql = 'SELECT recomPost FROM users WHERE id=?';
         const recomSelQuery = connection.query(recomSelSql,[req.session.displayName],(err,rows)=>{
           if (err) throw err;
-          if (rows.length==0){
-            res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray});
+          if (rows.length==0 || rows[0].recomPost==null){
+            res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
           }else{
             const recomPosts = rows[0].recomPost;
             const recomPostsArray = recomPosts.split(';');
             if (recomPostsArray.includes(page)){
-              res.render('boardHTML/postGuestRecommended.html',{title:preRows[0].title,rows:preRows,fileName:fileArray});
+              res.render('boardHTML/postGuestRecommended.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
             }else{
-              res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray});
+              res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
             }
           }          
         })
@@ -179,13 +203,28 @@ router.post('/board/update',(req,res)=>{
 
 router.get('/board/delete/:idx',(req,res)=>{
   const idx = req.params.idx;
-  const authSql = 'SELECT name FROM board WHERE idx=?';
+  const authSql = 'SELECT name, uploadfilepath FROM board WHERE idx=?';
   const delSql = 'DELETE FROM board WHERE idx=?';
+  
   conn.getConnection((err,connection)=>{
     if (err) throw err;
     const authQuery = connection.query(authSql,[idx],function(err,rows){
       if (err) throw err;
       if (rows[0].name==req.session.displayName){
+        const dir = path.join(__dirname,'..','/public/uploadedFiles/');
+        const findStr = idx+';'+req.session.displayName;
+        fs.readdir(dir,(err,data)=>{
+          if (err) throw err;
+          data.forEach((item,i)=>{
+              if (item.includes(findStr)){
+                  const filePath = dir+item;
+                  fs.unlink(filePath,(err)=>{
+                      if (err) throw err;
+                  })
+              }
+          })
+        })
+  
         const delQuery = connection.query(delSql,[idx],function(err,rows){
           res.send("<script>alert('삭제되었습니다.'); document.location.href='/board/list'</script>")
         })
@@ -216,14 +255,15 @@ router.get('/recommendDel/:idx',(req,res)=>{
               recomList+=recomPostsArray[i]+';';
             }
           }
+          const updateRecomQuery = connection.query(updateRecomSql,[idx],(err,rows)=>{
+            if (err) throw err;
+          })
         }
         const updateQuery = connection.query(updateSql,[recomList,req.session.displayName],(err,rows)=>{
           if (err) throw err;
-        })
-        const updateRecomQuery = connection.query(updateRecomSql,[idx],(err,rows)=>{
-          if (err) throw err;
           connection.release();
         })
+        
       })
       res.send("<script>alert('추천 해제되었습니다.'); document.location.href='/board/list/post/"+idx+"'</script>")
     })
