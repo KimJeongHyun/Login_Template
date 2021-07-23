@@ -26,8 +26,8 @@
           </tr>
           <tr>
             <td>
-              <input type="button" value="파일 업로드" onclick="openChild()">
-              <span id="sInput" style="font-size:12px"></span><a href="/uploadedFileDelete"><input type="button" tyle="margin-left:20px" value="업로드 취소" onclick="deleteFile()"></a>
+              <input type="button" id = "<%=id%>" value="파일 업로드" onclick="openChild(this)">
+              <span id="sInput" style="font-size:12px"></span><a href="/uploadedFileDelete/<%=id%>"><input type="button" tyle="margin-left:20px" value="업로드 취소" onclick="deleteFile()"></a>
             </td>
           </tr>
           <tr>
@@ -54,12 +54,12 @@
       const target=document.getElementById('target_btn');
       target.disabled=true;
     }
-    function openChild()
+    function openChild(e)
     {
       // window.name = "부모창 이름"; 
       window.name = "parentForm";
       // window.open("open할 window", "자식창 이름", "팝업창 옵션");
-      openWin = window.open("/fileUploadPage",
+      openWin = window.open("/fileUploadPage/"+e.id,
               "childForm", "width=570, height=350, resizable = no, scrollbars = no");    
     }
     function deleteFile(){

@@ -25,6 +25,12 @@
                <input style="border:none; width:100%; font-size:2em; font-weight:bold" type="text" name="title" value="<%=rows[0].title%>" > 
             </td>
           </tr>
+          <tr>
+            <td>
+              <input type="button" id = "<%=rows[0].idx%>" value="파일 업로드" onclick="openChild(this)">
+              <span id="sInput" style="font-size:12px"></span><a href="/uploadedFileDelete/<%=rows[0].idx%>"><input type="button" tyle="margin-left:20px" value="업로드 취소" onclick="deleteFile()"></a>
+            </td>
+          </tr>
           <tr >
             <td colspan="2" style="padding-top:20px;">
                <textarea style="border:none; width:100%; height:100%; padding-top:20px; font-size:1.3em" name="content"  required ><%=rows[0].content%></textarea>
@@ -40,4 +46,14 @@
         </form>
     </div>
   </body>
+  <script>
+    function openChild(e)
+    {
+      // window.name = "부모창 이름"; 
+      window.name = "parentForm";
+      // window.open("open할 window", "자식창 이름", "팝업창 옵션");
+      openWin = window.open("/fileUploadPage/"+e.id,
+              "childForm", "width=570, height=350, resizable = no, scrollbars = no");    
+    }
+  </script>
 </html>

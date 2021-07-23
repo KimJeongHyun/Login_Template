@@ -60,7 +60,7 @@ router.get('/board/list/post/:page',function(req,res,next){
             return false;
         }
       }
-      if (filePath!=null){
+      if (filePath!=null && filePath!=''){
         imgFilePath = rows[0].uploadfilepath.split('+');
         imgFilePath=imgFilePath.filter((element)=>checkExt(element));
         for (let i=0; i<imgFilePath.length; i++){
@@ -104,7 +104,6 @@ router.get('/board/list/post/:page',function(req,res,next){
 
 router.get('/board/write/:idx',function(req,res,next){
   if (typeof req.session.displayName!=='undefined'){
-    req.session.writeIdx = req.params.idx;
     res.render('boardHTML/write.html',{id:req.params.idx});
   }else{
     res.send("<script>alert('로그인을 해주시기 바랍니다.'); window.history.back();</script>")
@@ -130,7 +129,7 @@ router.post('/insert',(req,res)=>{
       const idxInit = 'ALTER TABLE board AUTO_INCREMENT=?;' 
       //SET @COUNT =0; UPDATE board SET board.idx = @COUNT:=@COUNT+1; 요걸 쓰면 AUTO_INCREMENT 속성을 초기화할 수 있다.
       const authSql = 'SELECT nick FROM users WHERE id=?';
-      const insertSql = 'INSERT INTO board (title, content, name, regdate, modidate, nick,uploadfilepath) VALUES(?,?,?,NOW(),NOW(),?,?)'
+      const insertSql = 'INSERT INTO board (title, content, name, regdate, modidate, nick, uploadfilepath) VALUES(?,?,?,NOW(),NOW(),?,?)'
       conn.getConnection((err,connection)=>{
         if (err) throw err;
         const selQuery = connection.query(selSql, function(err,rows){
@@ -151,11 +150,9 @@ router.post('/insert',(req,res)=>{
                 throw err;
               }else{
                 res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
-                req.session.writeIdx="";
               }
             })
           }
-          req.session.writeIdx='';
           req.session.filepath='';
           connection.release();
         })
@@ -163,7 +160,6 @@ router.post('/insert',(req,res)=>{
     }
   }else{
     res.send("<script>alert('비정상적인 접근입니다.'); document.location.href='/info'</script>")
-    req.session.writeIdx='';
     req.session.filepath='';
   }
 })
@@ -189,15 +185,53 @@ router.post('/board/update',(req,res)=>{
   const title = req.body.title;
   const content = req.body.content;
   const idx = req.body.idx;
-  const updateSql = 'UPDATE board SET title=?, content=?, modidate=NOW() WHERE idx=?'
+  let filePath='';
+  console.log(req.session.filepath);
+  if (typeof req.session.filepath=='undefined'){
+      filepath=null;
+  }else{
+      filepath=req.session.filepath;
+  }
   conn.getConnection((err,connection)=>{
     if (err) throw err;
-    const updateQuery = connection.query(updateSql,[title,content,idx],function(err,rows){
-      if (err) throw err;
-      res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
-      connection.release();
-    })
+    let fileList = '';
+    let selQuery = function(){
+      return new Promise(function(resolve,reject){
+        const sql = 'SELECT uploadfilepath FROM board WHERE idx=?';
+        connection.query(sql,[idx],(err,rows)=>{
+          if (err) reject(err);
+          if (rows.length==0 || (rows[0].uploadfilepath==null || rows[0].uploadfilepath=='')){
+            reject('There is no path in DB');
+          }else{
+            fileList = rows[0].uploadfilepath;
+            resolve('Detect path from DB');
+          }
+        })
+      })
+    }
+    let updateQuery = function(){
+      return new Promise(function(resolve,reject){
+        const sql = 'UPDATE board SET title=?, content=?, uploadfilepath=?, modidate=NOW() WHERE idx=?'
+        connection.query(sql,[title,content,filepath,idx],function(err,rows){
+          if (err) reject(err);
+          res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
+          connection.release();
+          resolve('Update path in DB');
+        })
+      })
+    }
+    let worker = async function(){
+      try{
+          console.log(await selQuery());
+          filepath = fileList+'+'+filepath;
+          console.log(await updateQuery());
+      }catch{
+          console.log(await updateQuery());
+      }
+    }
+    worker();
   })
+  req.session.filepath='';
   req.session.updateIdx='';
 })
 

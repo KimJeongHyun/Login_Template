@@ -12,14 +12,15 @@ const storage = multer.diskStorage({
         cb(null, "public/uploadedFiles/");
     },
     filename(req,file,cb) {
-        const postIdx = req.session.writeIdx;
-        cb(null, postIdx+';'+req.session.displayName+`;${Date.now()};${file.originalname}`);
+        const idxArray = req.headers.referer.split('/');
+        const idx = idxArray[idxArray.length-1];
+        cb(null, idx+';'+req.session.displayName+`;${Date.now()};${file.originalname}`);
     }
 })
 
 const upload = multer({storage: storage});
 
-router.get('/fileUploadPage',(req,res)=>{
+router.get('/fileUploadPage/:idx',(req,res)=>{
     const updateIdx = req.session.updateIdx;
     const sql = 'SELECT uploadfilepath from board where idx=?';
     let filePath = '';
@@ -62,22 +63,67 @@ router.post('/upload',upload.single('img'),(req,res)=>{
     }
 })
 
-router.get('/uploadedFileDelete',(req,res)=>{
+router.get('/uploadedFileDelete/:idx',(req,res)=>{
     if (typeof req.session.displayName!=='undefined'){
-        const postIdx = req.session.writeIdx;
-        const findStr = postIdx+';'+req.session.displayName;
-        const dir = path.join(__dirname,'..','/public/uploadedFiles/');
-        fs.readdir(dir,(err,data)=>{
+        const postIdx = req.params.idx;
+        conn.getConnection((err,connection)=>{
             if (err) throw err;
-            data.forEach((item,i)=>{
-                if (item.includes(findStr)){
-                    const filePath = dir+item;
-                    fs.unlink(filePath,(err)=>{
-                        if (err) throw err;
+            let selSqlWork = function(){
+                return new Promise(function(resolve,reject){
+                    const sql = 'SELECT uploadfilepath FROM board WHERE idx=?';
+                    req.session.filepath='';
+                    connection.query(sql,[postIdx],(err,rows)=>{
+                        if (err) reject(err);
+                        if (rows.length==0 || (rows[0].uploadfilepath==null || rows[0].uploadfilepath=='')){
+                            reject('Undetect uploadfilepath in DB')
+                        }else{
+                            resolve('Detect uploadfilepath in DB');
+                        }
+                    });
+                })
+            }
+            let updateAllSqlWork = function(){
+                return new Promise(function(resolve,reject){
+                    const sql = 'UPDATE board SET uploadfilepath=null WHERE idx=?';
+                    connection.query(sql,[postIdx],(err,rows)=>{
+                        if (err) reject(err);
+                        connection.release();
+                        resolve('Delete uploadfilepath from DB')
                     })
+                })
+            }
+            let deleteAllUploadedFiles = function(){
+                return new Promise(function(resolve,reject){
+                    const findStr = postIdx+';'+req.session.displayName;
+                    const dir = path.join(__dirname,'..','/public/uploadedFiles/');
+                    fs.readdir(dir,(err,data)=>{
+                        if (err) reject(err);
+                        data.forEach((item,i)=>{
+                            if (item.includes(findStr)){
+                                const filePath = dir+item;
+                                fs.unlink(filePath,(err)=>{
+                                    if (err) reject(err);
+                                    resolve('Clear uploadedFiles');
+                                })
+                            }
+                        })
+                    })
+                })
+            }
+            let worker = async function(){
+                try{
+                    let work1 = await selSqlWork();
+                    console.log('Uploaded files detected, path is in DB');
+                    let work2 = await updateAllSqlWork();
+                    let work3 = await deleteAllUploadedFiles();
+                }catch{
+                    console.log('There is no uploaded files or path is not in DB');
+                    console.log(await deleteAllUploadedFiles());
                 }
-            })
+            }
+            worker();
         })
+        
     }else{
         res.send("<script>alert('비정상적인 접근입니다.'); document.location.href='/info'</script>")
     }
