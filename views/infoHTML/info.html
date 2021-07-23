@@ -6,7 +6,8 @@
     <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
-        <ul class="nav-container">
+        <nav> <% // 상단 메뉴바 %>
+          <ul class="nav-container">
             <li class="nav-item">
               <a href="/info">Info</a>
               <ul>
@@ -15,9 +16,10 @@
               </ul>
             </li>
             <li class="nav-item">
-                <a href="/board/list">Board</a>
-            </li>
-        </ul>
+              <a href="/board/list">Board</a>
+          </li>
+          </ul>
+        </nav>
         <div class="ContentField">
             <form action="/login">
                 <input type="submit" value="로그인">
