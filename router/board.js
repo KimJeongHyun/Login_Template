@@ -70,7 +70,7 @@ router.get('/board/list/post/:page',function(req,res,next){
         for (let i=0; i<fileArray.length; i++){
           fileArray[i] = fileArray[i].split('\\')[2].split(';')[3];
         }
-      }
+      } // 프로미스 1
       if (author==req.session.displayName){
         res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows, fileName:fileArray,imgPaths:imgFilePath});
       }else{
@@ -89,8 +89,7 @@ router.get('/board/list/post/:page',function(req,res,next){
             }
           }          
         })
-        
-      }
+      } // 프로미스 2
       if (req.session.refresh==true){
         const query = connection.query('UPDATE board SET hit=hit+1 WHERE idx='+page, function(err,rows){
           if (err) throw err;
@@ -122,7 +121,7 @@ router.post('/insert',(req,res)=>{
       filepath=req.session.filepath;
     }
     if (title.length==0 || content.length==0){
-     res.send("<script>alert('제목 또는 내용에 아무것도 작성되지 않았습니다.'); document.location.href='/list/write/new'</script>")
+     res.send("<script>alert('제목 또는 내용에 아무것도 작성되지 않았습니다.'); window.history.back();'</script>")
     }
     else{
       const selSql = 'SELECT idx FROM board';
@@ -140,7 +139,7 @@ router.post('/insert',(req,res)=>{
               if (err) throw err;
             })
           }
-        })
+        }) // 프로미스 1
         const authQuery = connection.query(authSql,[author],function(err,rows){
           if (err){
             throw err;
@@ -152,7 +151,7 @@ router.post('/insert',(req,res)=>{
                 res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
               }
             })
-          }
+          } // 프로미스 2
           req.session.filepath='';
           connection.release();
         })
@@ -187,7 +186,7 @@ router.post('/board/update',(req,res)=>{
   const idx = req.body.idx;
   let filePath='';
   console.log(req.session.filepath);
-  if (typeof req.session.filepath=='undefined'){
+  if (typeof req.session.filepath=='undefined' || req.session.filepath==''){
       filepath=null;
   }else{
       filepath=req.session.filepath;
@@ -223,7 +222,11 @@ router.post('/board/update',(req,res)=>{
     let worker = async function(){
       try{
           console.log(await selQuery());
-          filepath = fileList+'+'+filepath;
+          if (filepath!=null){
+            filepath = fileList+'+'+filepath;
+          }else{
+            filepath=fileList;
+          }
           console.log(await updateQuery());
       }catch{
           console.log(await updateQuery());
@@ -288,10 +291,10 @@ router.get('/recommendDel/:idx',(req,res)=>{
             if (recomPostsArray[i]!=idx && recomPostsArray[i]!=''){
               recomList+=recomPostsArray[i]+';';
             }
-          }
+          } 
           const updateRecomQuery = connection.query(updateRecomSql,[idx],(err,rows)=>{
             if (err) throw err;
-          })
+          }) 
         }
         const updateQuery = connection.query(updateSql,[recomList,req.session.displayName],(err,rows)=>{
           if (err) throw err;
