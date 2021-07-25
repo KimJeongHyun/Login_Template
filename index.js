@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const http = require('http');
 const path = require('path');
 
 app.use(express.static('public'));
@@ -17,6 +18,7 @@ const userProfile = require('./controller/userProfile.js');
 const fileUpload = require('./controller/fileUpload.js');
 const fileDownload = require('./controller/fileDownload');
 const filterSearch = require('./controller/filterSearch.js');
+const socketModule = require('./controller/socketChat.js');
 
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
@@ -66,8 +68,10 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.get('/',(req,res)=>{
-    res.render('infoHTML/index.html');
+    res.render('chatHTML/client.html');
 });
 
-app.listen(port, ()=>console.log(`Server Start. Port : ${port}`))
 
+const server = http.createServer(app);
+socketModule.connectSocket(server);
+server.listen(port, ()=>console.log(`Server Start. Port : ${port}`))
