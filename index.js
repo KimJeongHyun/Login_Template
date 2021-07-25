@@ -71,7 +71,6 @@ app.get('/',(req,res)=>{
     res.render('infoHTML/index.html');
 });
 
-
 const server = http.createServer(app);
 socketModule.connectSocket(server);
 server.listen(port, ()=>console.log(`Server Start. Port : ${port}`))

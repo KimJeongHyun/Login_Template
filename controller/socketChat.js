@@ -4,9 +4,7 @@ module.exports={
         let count = 1;
         appSocket.on('connection',(socket)=>{
             console.log('User connected',socket.id);
-            let name = "user"+count++;
-            appSocket.to(socket.id).emit('change name',name);
-
+            
             socket.on('disconnect',()=>{
                 console.log('User disconnected', socket.id)
             });
