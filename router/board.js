@@ -60,43 +60,68 @@ router.get('/board/list/post/:page',function(req,res,next){
             return false;
         }
       }
-      if (filePath!=null && filePath!=''){
-        imgFilePath = rows[0].uploadfilepath.split('+');
-        imgFilePath=imgFilePath.filter((element)=>checkExt(element));
-        for (let i=0; i<imgFilePath.length; i++){
-          imgFilePath[i] = imgFilePath[i].slice(7);
-        }
-        fileArray = rows[0].uploadfilepath.split('+');
-        for (let i=0; i<fileArray.length; i++){
-          fileArray[i] = fileArray[i].split('\\')[2].split(';')[3];
-        }
-      } // 프로미스 1
-      if (author==req.session.displayName){
-        res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows, fileName:fileArray,imgPaths:imgFilePath});
-      }else{
-        const recomSelSql = 'SELECT recomPost FROM users WHERE id=?';
-        const recomSelQuery = connection.query(recomSelSql,[req.session.displayName],(err,rows)=>{
-          if (err) throw err;
-          if (rows.length==0 || rows[0].recomPost==null){
-            res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
-          }else{
-            const recomPosts = rows[0].recomPost;
-            const recomPostsArray = recomPosts.split(';');
-            if (recomPostsArray.includes(page)){
-              res.render('boardHTML/postGuestRecommended.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
-            }else{
-              res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
+      let fileStringWork = function(){
+        return new Promise(function(resolve,reject){
+          if (filePath!=null && filePath!=''){
+            imgFilePath = rows[0].uploadfilepath.split('+');
+            imgFilePath=imgFilePath.filter((element)=>checkExt(element));
+            for (let i=0; i<imgFilePath.length; i++){
+              imgFilePath[i] = imgFilePath[i].slice(7);
             }
-          }          
-        })
-      } // 프로미스 2
-      if (req.session.refresh==true){
-        const query = connection.query('UPDATE board SET hit=hit+1 WHERE idx='+page, function(err,rows){
-          if (err) throw err;
+            fileArray = rows[0].uploadfilepath.split('+');
+            for (let i=0; i<fileArray.length; i++){
+              fileArray[i] = fileArray[i].split('\\')[2].split(';')[3];
+            }
+            resolve('file string work clear');
+          }else{
+            resolve('no need to file string work');
+          }
         })
       }
-      connection.release();
-      req.session.refresh=false; // 조회수 증가 후에는 새로고침 세션 값을 false로 돌려 post에서 update가 발생하지 않도록 방지한다.
+
+      let sqlWork = function(){
+        return new Promise(function(resolve,reject){
+          if (author==req.session.displayName){
+            res.render('boardHTML/postUser.html',{title:rows[0].title, rows:rows, fileName:fileArray,imgPaths:imgFilePath});
+            resolve('client is post user');
+          }else{
+            const recomSelSql = 'SELECT recomPost FROM users WHERE id=?';
+            const recomSelQuery = connection.query(recomSelSql,[req.session.displayName],(err,rows)=>{
+              if (err) throw err;
+              if (rows.length==0 || rows[0].recomPost==null){
+                res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
+                resolve('client is post guest, recomPost is null.');
+              }else{
+                const recomPosts = rows[0].recomPost;
+                const recomPostsArray = recomPosts.split(';');
+                if (recomPostsArray.includes(page)){
+                  res.render('boardHTML/postGuestRecommended.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
+                  resolve('client is recommended user');
+                }else{
+                  res.render('boardHTML/postGuest.html',{title:preRows[0].title,rows:preRows,fileName:fileArray,imgPaths:imgFilePath});
+                  resolve('client is post guest, post is not included in recomPost');
+                }
+              }          
+            })
+          }
+        })
+      }
+
+      let worker = async function(){
+        console.log(await fileStringWork());
+        console.log(await sqlWork());
+        if (req.session.refresh==true){
+          const query = connection.query('UPDATE board SET hit=hit+1 WHERE idx='+page, function(err,rows){
+            if (err) throw err;
+          })
+        }
+        req.session.refresh=false;
+  
+        connection.release();
+      }
+
+      worker();
+       // 조회수 증가 후에는 새로고침 세션 값을 false로 돌려 post에서 update가 발생하지 않도록 방지한다.
     })
   })
 })
@@ -139,7 +164,7 @@ router.post('/insert',(req,res)=>{
               if (err) throw err;
             })
           }
-        }) // 프로미스 1
+        })
         const authQuery = connection.query(authSql,[author],function(err,rows){
           if (err){
             throw err;
@@ -151,7 +176,7 @@ router.post('/insert',(req,res)=>{
                 res.send("<script>alert('작성되었습니다.'); document.location.href='/board/list'</script>")
               }
             })
-          } // 프로미스 2
+          }
           req.session.filepath='';
           connection.release();
         })
