@@ -18,7 +18,8 @@ router.post('/loginUser',(req,res)=>{
                     const realPW = key.toString('base64');
                     if (realPW==results[0].pw){
                         req.session.displayName=userid;
-                        res.render('infoHTML/loginInfo.html',{name:results[0].nick});
+                        res.send('<script>document.location.href="loginInfo";</script>')
+                        //res.render('infoHTML/loginInfo.html',{name:results[0].nick});
                         //res.send(`<script type="text/javascript">alert("환영합니다! ${req.session.displayName}님!"); document.location.href="/loginInfo"; </script> `);
                     }
                     else{

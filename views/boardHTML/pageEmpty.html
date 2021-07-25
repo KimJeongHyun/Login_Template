@@ -5,20 +5,8 @@
     <link rel='stylesheet' href='../../css/style.css' />
   </head>
   <body>
-    <nav> <% // 상단 메뉴바 %>
-      <ul class="nav-container">
-        <li class="nav-item">
-          <a href="/info">Info</a>
-          <ul>
-            <li><a href="#">Info_1</a></li>
-            <li><a href="#">Info_2</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="/board/list">Board</a>
-      </li>
-      </ul>
-    </nav>
+    <div include-html="../../commonHTML/menu.html"></div>
+    <script src="../../commonJS/includeHTML.js"></script>
     <div class="ContentField" style="text-align:center">
       <h1><%= title %></h1>
       <table style="margin:auto; width:50%">

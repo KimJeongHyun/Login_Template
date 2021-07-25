@@ -6,32 +6,21 @@
     <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
-        <nav> <% // 상단 메뉴바 %>
-          <ul class="nav-container">
-            <li class="nav-item">
-              <a href="/info">Info</a>
-              <ul>
-                <li><a href="#">Info_1</a></li>
-                <li><a href="#">Info_2</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="/board/list">Board</a>
-          </li>
-          </ul>
-        </nav>
-        <div class="ContentField">
-            <form action="/login">
-                <input type="submit" value="로그인">
-            </form>
-            <br>
-            <form action="/register">
-                <input type="submit" value="회원가입">
-            </form>
-            <br>
-            <form action="/board/list">
-                <input type="submit" value="게시판">
-            </form>
-        </div>
+      <div include-html="commonHTML/menu.html"></div>
+      <script src="commonJS/includeHTML.js"></script>
+      <div class="ContentField">
+        <form action="/login">
+          <input type="submit" value="로그인">
+        </form>
+        <br>
+        <form action="/register">
+          <input type="submit" value="회원가입">
+        </form>
+        <br>
+        <form action="/board/list">
+          <input type="submit" value="게시판">
+        </form>
+      </div>
     </body>
+    
 </html>

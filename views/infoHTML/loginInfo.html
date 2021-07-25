@@ -6,20 +6,8 @@
     <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
-        <nav> <% // 상단 메뉴바 %>
-          <ul class="nav-container">
-            <li class="nav-item">
-              <a href="/info">Info</a>
-              <ul>
-                <li><a href="#">Info_1</a></li>
-                <li><a href="#">Info_2</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="/board/list">Board</a>
-          </li>
-          </ul>
-        </nav>
+      <div include-html="commonHTML/menu.html"></div>
+      <script src="commonJS/includeHTML.js"></script>
         <div class="ContentField">
           <h1 id="Title">Hello! <%=name%></h1>
           <form action="/logout" method="post">
@@ -32,5 +20,34 @@
           <br>
           <a href="/myProfile"><input type="button" value="My Page"></a>
         </div>
+        
+    <div>
+      <textarea id="chatLog" class="chat_log" readonly></textarea>
+    </div>
+    <form id="chat">
+      <input id="name" class="name" type="text" readonly>
+      <input id="message" class="message" type="text">
+      <input type="submit" class="chat" value="chat"/>
+    </form>
+    <script src="/socket.io/socket.io.js"></script> <!-- 1 -->
+    <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io(); //1
+      $('#chat').on('submit', function(e){ //2
+        socket.emit('send message', $('#name').val(), $('#message').val());
+        $('#message').val('');
+        $('#message').focus();
+        e.preventDefault();
+      });
+      socket.on('receive message', function(msg){ //3
+        $('#chatLog').append(msg+'\n');
+        $('#chatLog').scrollTop($('#chatLog')[0].scrollHeight);
+      });
+      socket.on('change name', function(name){ //4
+        $('#name').val(name);
+      });
+    </script>
+
     </body>
+    
 </html>
