@@ -68,7 +68,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.get('/',(req,res)=>{
-    res.render('chatHTML/client.html');
+    res.render('infoHTML/index.html');
 });
 
 
