@@ -6,17 +6,8 @@
     <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
-        <nav> <% // 상단 메뉴바 %>
-            <ul class="nav-container">
-                <li class="nav-item">
-                  <a href="/info">Info</a>
-                  <ul>
-                    <li><a href="#">Info_1</a></li>
-                    <li><a href="#">Info_2</a></li>
-                  </ul>
-                </li>
-            </ul>
-        </nav>
+        <div include-html="commonHTML/menu.html"></div>
+        <script src="commonJS/includeHTML.js"></script>
         <div class="ContentField">
             <h1 style="width:50%; min-width:300px;">Join my website!</h1>
             <form action="/registerUser" method="post">
@@ -210,4 +201,5 @@
         document.getElementsByName('zipNo')[0].value=zipNo;
       }
     </script>
+    <script src="commonJS/sideBar.js"></script>
 </html>

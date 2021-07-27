@@ -6,17 +6,8 @@
     <link rel='stylesheet' href='css/style.css' />
 </head>
     <body>
-        <nav> <% // 상단 메뉴바 %>
-            <ul class="nav-container">
-                <li class="nav-item">
-                  <a href="/info">Info</a>
-                  <ul>
-                    <li><a href="#">Info_1</a></li>
-                    <li><a href="#">Info_2</a></li>
-                  </ul>
-                </li>
-            </ul>
-        </nav>
+        <div include-html="commonHTML/menu.html"></div>
+        <script src="commonJS/includeHTML.js"></script>
         <div class="ContentField">
             <h1 style="width:30%; min-width:250px;">Login Page</h1>
             <form action="/loginUser" method="post">
@@ -43,4 +34,5 @@
             </form>
         </div>
     </body>
+    <script src="commonJS/sideBar.js"></script>
 </html>

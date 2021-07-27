@@ -3,9 +3,13 @@ const app = express();
 const http = require('http');
 const path = require('path');
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname,'public')));
+app.use('/board', express.static(path.join(__dirname,'public')));
+app.use('/board/list', express.static(path.join(__dirname,'public')));
+app.use('/board/write', express.static(path.join(__dirname,'public')));
+app.use('/board/list/post', express.static(path.join(__dirname,'public')));
 
-const configF = require('./config/db_config.json');
+const configF = require('./config/db_config.json'); 
 const configL = require('./config/db_configLocal.json');
 
 const userRouter = require('./router/user.js');
