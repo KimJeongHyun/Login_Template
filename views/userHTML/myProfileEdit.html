@@ -4,104 +4,107 @@
     <meta charset="utf-8">
     <title>정보 수정</title>
     <link rel='stylesheet' href='css/style.css' />
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
     <body>
-        <div include-html="commonHTML/menu.html"></div>
+        <div include-html="commonHTML/newSideBarUser.html"></div>
         <script src="commonJS/includeHTML.js"></script>
-        <div class="ContentField" style="text-align:center">
-            <div style="display:inline-block">
-                <h1 style="width:100%; min-width:400px;">User Profile Edit</h1>
-                <form action="myProfileEditSubmit" method="post">
-                    <table style="width:100%">
-                        <tr>
-                            <td>
-                                ID
-                            </td>
-                            <td style="margin-left:10%;">
-                                <span><%=rows[0].id%></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                이름
-                            </td>
-                            <td style="margin-left:10%;">
-                                <span><%=rows[0].uname%></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                닉네임
-                            </td>
-                            <td style="margin-left:10%;">
-                                <span><%=rows[0].nick%></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                생일
-                            </td>
-                            <td style="margin-left:10%;">
-                                <input style="border:0.2; width:30%" type="date" name="birth" value="<%=rows[0].birthF%>">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                전화번호
-                            </td>
-                            <td>
-                                <input style="border:none; width:5%" type="text" name="phonePrefix" id="phonePrefix" value="<%=rows[0].phone.slice(0,3)%>" onkeypress="onlyNumber();" readonly>
-                                <select name="phonePrefixSelect"  onchange="handleOnChangePhone(this)">
-                                    <option value="none" selected>=== 선택 ===</option>
-                                    <option value="etc">직접 입력</option>
-                                    <option value="02">02</option>
-                                    <option value="031">031</option>
-                                    <option value="032">032</option>
-                                    <option value="033">033</option>
-                                    <option value="041">041</option>
-                                    <option value="042">042</option>
-                                    <option value="043">043</option>
-                                    <option value="044">044</option>
-                                    <option value="051">051</option>
-                                    <option value="052">052</option>
-                                    <option value="053">053</option>
-                                    <option value="054">054</option>
-                                    <option value="055">055</option>
-                                    <option value="061">061</option>
-                                    <option value="062">062</option>
-                                    <option value="063">063</option>
-                                    <option value="064">064</option>
-                                    <option value="070">070</option>
-                                    <option value="010">010</option>
-                                    <option value="011">011</option>
-                                    <option value="016">016</option>
-                                    <option value="017">017</option>
-                                    <option value="018">018</option>
-                                    <option value="019">019</option>
-                                  </select>
-                                  -
-                                  <input style="border:0.2; width:10%" type="text" name="phoneInfix" id="phoneInfix" maxlength='4' value="<%=rows[0].phone.slice(3,7)%>" onkeypress="onlyNumber();">
-                                  -
-                                  <input style="border:0.2; width:10%" type="text" name="phonePostfix" id="phonePostfix" maxlength='4' value="<%=rows[0].phone.slice(7)%>" onkeypress="onlyNumber();">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                주소 입력
-                            </td>
-                            <td>
-                                <input name="roadAddrPart1" type="text" placeholder="도로명주소" />
-                                <input name="addrDetail" type="text" placeholder="고객입력 상세주소" />
-                                <input name="zipNo" type="text" placeholder="우편번호" />
-                                <input type="button" value="주소검색" onclick="goPopup()" />
-                            </td>
-                        </tr>
-                    </table>
-                    <br>
-                    <br>
-                    <input style="margin-top:20px;" type="submit" value="확인">
-                </form>
-                
+        <div class= "ContentContainer" id="ContentContainer">
+            <div class="ContentField" style="text-align:center">
+                <div style="display:inline-block">
+                    <h1 style="width:100%; min-width:400px;">User Profile Edit</h1>
+                    <form action="myProfileEditSubmit" method="post">
+                        <table style="width:100%">
+                            <tr>
+                                <td>
+                                    ID
+                                </td>
+                                <td style="margin-left:10%;">
+                                    <span><%=rows[0].id%></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    이름
+                                </td>
+                                <td style="margin-left:10%;">
+                                    <span><%=rows[0].uname%></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    닉네임
+                                </td>
+                                <td style="margin-left:10%;">
+                                    <span><%=rows[0].nick%></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    생일
+                                </td>
+                                <td style="margin-left:10%;">
+                                    <input style="border:0.2; width:30%" type="date" name="birth" value="<%=rows[0].birthF%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    전화번호
+                                </td>
+                                <td>
+                                    <input style="border:none; width:5%" type="text" name="phonePrefix" id="phonePrefix" value="<%=rows[0].phone.slice(0,3)%>" onkeypress="onlyNumber();" readonly>
+                                    <select name="phonePrefixSelect"  onchange="handleOnChangePhone(this)">
+                                        <option value="none" selected>=== 선택 ===</option>
+                                        <option value="etc">직접 입력</option>
+                                        <option value="02">02</option>
+                                        <option value="031">031</option>
+                                        <option value="032">032</option>
+                                        <option value="033">033</option>
+                                        <option value="041">041</option>
+                                        <option value="042">042</option>
+                                        <option value="043">043</option>
+                                        <option value="044">044</option>
+                                        <option value="051">051</option>
+                                        <option value="052">052</option>
+                                        <option value="053">053</option>
+                                        <option value="054">054</option>
+                                        <option value="055">055</option>
+                                        <option value="061">061</option>
+                                        <option value="062">062</option>
+                                        <option value="063">063</option>
+                                        <option value="064">064</option>
+                                        <option value="070">070</option>
+                                        <option value="010">010</option>
+                                        <option value="011">011</option>
+                                        <option value="016">016</option>
+                                        <option value="017">017</option>
+                                        <option value="018">018</option>
+                                        <option value="019">019</option>
+                                    </select>
+                                    -
+                                    <input style="border:0.2; width:10%" type="text" name="phoneInfix" id="phoneInfix" maxlength='4' value="<%=rows[0].phone.slice(3,7)%>" onkeypress="onlyNumber();">
+                                    -
+                                    <input style="border:0.2; width:10%" type="text" name="phonePostfix" id="phonePostfix" maxlength='4' value="<%=rows[0].phone.slice(7)%>" onkeypress="onlyNumber();">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    주소 입력
+                                </td>
+                                <td>
+                                    <input name="roadAddrPart1" type="text" placeholder="도로명주소" />
+                                    <input name="addrDetail" type="text" placeholder="고객입력 상세주소" />
+                                    <input name="zipNo" type="text" placeholder="우편번호" />
+                                    <input type="button" value="주소검색" onclick="goPopup()" />
+                                </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <br>
+                        <input style="margin-top:20px;" type="submit" value="확인">
+                    </form>
+                    
+                </div>
             </div>
         </div>
     </body>
@@ -174,5 +177,17 @@
         document.getElementsByName('zipNo')[0].value=zipNo;
       }
     </script>
-    <script src="commonJS/sideBar.js"></script>
+    <script>
+        window.onload=function(){
+            let menuBtn = document.querySelector('#menuBtn');
+            let sideBar = document.getElementById('sideMenu');
+            let bottomContent = document.getElementById('guestContent');
+            let contentContainer = document.querySelector('#ContentContainer');
+            menuBtn.addEventListener('click',function(){
+                sideBar.classList.toggle('active');
+                bottomContent.classList.toggle('active');
+                contentContainer.classList.toggle('active');
+            })
+        }
+    </script>
 </html>

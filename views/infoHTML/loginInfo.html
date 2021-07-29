@@ -4,31 +4,26 @@
     <meta charset="utf-8">
     <title>Index</title>
     <link rel='stylesheet' href='css/style.css' />
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
     <body>
-      <div include-html="commonHTML/menu.html"></div>
+      <div include-html="commonHTML/newSideBarUser.html"></div>
       <script src="commonJS/includeHTML.js"></script>
+      <div class= "ContentContainer" id="ContentContainer">
         <div class="ContentField">
           <h1 id="Title">Hello! <%=name%></h1>
-          <form action="/logout" method="post">
-              <input type="submit" value="로그아웃">
+          <div>
+            <textarea id="chatLog" class="chat_log" readonly></textarea>
+          </div>
+          <form id="chat">
+            <input id="name" class="name" type="text" value="<%=name%>" readonly>
+            <input id="message" class="message" type="text">
+            <input type="submit" class="chat" value="chat"/>
           </form>
-          <br>
-          <form action="/board/list">
-              <input type="submit" value="게시판">
-          </form>
-          <br>
-          <a href="/myProfile"><input type="button" value="My Page"></a>
+        </div>
         </div>
         
-    <div>
-      <textarea id="chatLog" class="chat_log" readonly></textarea>
-    </div>
-    <form id="chat">
-      <input id="name" class="name" type="text" value="<%=name%>" readonly>
-      <input id="message" class="message" type="text">
-      <input type="submit" class="chat" value="chat"/>
-    </form>
+        
     <script src="/socket.io/socket.io.js"></script> <!-- 1 -->
     <script src="//code.jquery.com/jquery-1.11.1.js"></script>
     <script>
@@ -48,5 +43,17 @@
       });
     </script>
     </body>
-    <script src="commonJS/sideBar.js"></script>
+    <script>
+      window.onload=function(){
+        let menuBtn = document.querySelector('#menuBtn');
+        let sideBar = document.getElementById('sideMenu');
+        let bottomContent = document.getElementById('guestContent');
+        let contentContainer = document.querySelector('#ContentContainer');
+        menuBtn.addEventListener('click',function(){
+            sideBar.classList.toggle('active');
+            bottomContent.classList.toggle('active');
+            contentContainer.classList.toggle('active');
+        })
+      }
+  </script>
 </html>

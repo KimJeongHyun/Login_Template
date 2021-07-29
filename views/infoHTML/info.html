@@ -4,28 +4,34 @@
     <meta charset="utf-8">
     <title>Index</title>
     <link rel='stylesheet' href='css/style.css' />
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    
 </head>
     <body>
-      <div include-html="commonHTML/menu.html"></div>
+      <div include-html="commonHTML/newSideBar.html"></div>
       <script src="commonJS/includeHTML.js"></script>
-      <div class="ContentField">
-        <form action="/login">
-          <input type="submit" value="로그인">
-        </form>
-        <br>
-        <form action="/register">
-          <input type="submit" value="회원가입">
-        </form>
-        <br>
-        <form action="/board/list">
-          <input type="submit" value="게시판">
-        </form>
-        <img src="uploadedFiles/hi.jpg">
+      <div class= "ContentContainer" id="ContentContainer">
+        <div class="ContentField">
+          <img src="uploadedFiles/hi.jpg">
+        </div>
       </div>
+      
       <div id='topDiv'>
         <span id='top' hidden><img src="decoImages/topicon.png"></span>
         <script src="commonJS/buttonTop.js"></script>
       </div>
     </body>
-    <script src="commonJS/sideBar.js"></script>
+    <script>
+      window.onload=function(){
+        let menuBtn = document.querySelector('#menuBtn');
+        let sideBar = document.getElementById('sideMenu');
+        let bottomContent = document.getElementById('guestContent');
+        let contentContainer = document.querySelector('#ContentContainer');
+        menuBtn.addEventListener('click',function(){
+            sideBar.classList.toggle('active');
+            bottomContent.classList.toggle('active');
+            contentContainer.classList.toggle('active');
+        })
+      }
+  </script>
 </html>

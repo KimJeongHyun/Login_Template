@@ -3,27 +3,52 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='css/style.css' />
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
   </head>
   <body>
-    <div include-html="commonHTML/menu.html"></div>
+    <%
+        if (typeof userName!=='undefined'){
+    %>
+          <div include-html="commonHTML/newSideBarUser.html"></div>
+    <%
+        }else{
+    %>
+          <div include-html="commonHTML/newSideBar.html"></div>
+    <%
+        }
+    %>
     <script src="commonJS/includeHTML.js"></script>
-    <div class="ContentField" style="text-align:center">
-      <h1><%= title %></h1>
-      <table style="margin:auto; width:50%">
-        <tr>
-          <th>번호</th>
-          <th>제목</th>
-          <th>글쓴이</th>
-          
-        </tr>
-        <tr>
-            <td colspan="3">
-                글이 없습니다. 글을 작성해주세요.
-            </td>
-        </tr>
-      </table>
-      <a href="../write/<%=lastidx%>" style="margin-top:50px"><input type="button" value="글 쓰기"></a>
+    <div class= "ContentContainer" id="ContentContainer">
+      <div class="ContentField" style="text-align:center">
+        <h1><%= title %></h1>
+        <table style="margin:auto; width:50%">
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>글쓴이</th>
+            
+          </tr>
+          <tr>
+              <td colspan="3">
+                  글이 없습니다. 글을 작성해주세요.
+              </td>
+          </tr>
+        </table>
+        <a href="../write/<%=lastidx%>" style="margin-top:50px"><input type="button" value="글 쓰기"></a>
+      </div>
     </div>
   </body>
-  <script src="commonJS/sideBar.js"></script>
+  <script>
+    window.onload=function(){
+      let menuBtn = document.querySelector('#menuBtn');
+      let sideBar = document.getElementById('sideMenu');
+      let bottomContent = document.getElementById('guestContent');
+      let contentContainer = document.querySelector('#ContentContainer');
+      menuBtn.addEventListener('click',function(){
+          sideBar.classList.toggle('active');
+          bottomContent.classList.toggle('active');
+          contentContainer.classList.toggle('active');
+      })
+    }
+  </script>
 </html>

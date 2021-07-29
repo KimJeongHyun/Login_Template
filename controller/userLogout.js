@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const path = require('path');
 
-router.post('/logout',(req,res)=>{
+router.get('/logout',(req,res)=>{
     req.session.destroy();
     res.render('infoHTML/info.html');
 })

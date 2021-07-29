@@ -27,7 +27,7 @@ router.get('/board/list/:page', function(req, res, next) {
         })
         res.render('boardHTML/pageEmpty.html',{title:'게시판 리스트',lastidx:1});
       }else{
-        res.render('boardHTML/page.html',{title:'게시판 리스트',rows:rows, page:page, length:rows.length-1, page_num:10, lastidx:rows[0].idx+1});
+        res.render('boardHTML/page.html',{title:'게시판 리스트',rows:rows, page:page, length:rows.length-1, page_num:10, lastidx:rows[0].idx+1,userName:req.session.displayName});
       }
       connection.release();
     })

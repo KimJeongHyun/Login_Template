@@ -4,68 +4,83 @@
     <meta charset="utf-8">
     <title>Profile</title>
     <link rel='stylesheet' href='css/style.css' />
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 </head>
     <body>
-        <div include-html="commonHTML/menu.html"></div>
+        <div include-html="commonHTML/newSideBarUser.html"></div>
         <script src="commonJS/includeHTML.js"></script>
-        <div class="ContentField" style="text-align:center">
-            <div style="display:inline-block">
-                <h1 style="width:20%; min-width:400px;">User Profile</h1>
-                <table style="width:100%">
-                    <tr>
-                        <td>
-                            ID
-                        </td>
-                        <td style="margin-left:10%;">
-                            <span><%=rows[0].id%></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            이름
-                        </td>
-                        <td style="margin-left:10%;">
-                            <span><%=rows[0].uname%></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            닉네임
-                        </td>
-                        <td style="margin-left:10%;">
-                            <span><%=rows[0].nick%></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            생일
-                        </td>
-                        <td style="margin-left:10%;">
-                            <span><%=rows[0].birthF%></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            전화번호
-                        </td>
-                        <td style="margin-left:10%;">
-                            <span><%=rows[0].phone.slice(0,3)%></span>-<span><%=rows[0].phone.slice(3,7)%></span>-<span><%=rows[0].phone.slice(7)%></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            주소
-                        </td>
-                        <td style="margin-left:10%;">
-                            <span><%=rows[0].address%></span>
-                        </td>
-                    </tr>
-                </table>
-                <br>
-                <br>
-                <a href="/myProfileEdit" style="margin-top:50px"><input type="button" value="내 정보 수정"></a>
+        <div class= "ContentContainer" id="ContentContainer">
+            <div class="ContentField" style="text-align:center">
+                <div style="display:inline-block">
+                    <h1 style="width:20%; min-width:400px;">User Profile</h1>
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                ID
+                            </td>
+                            <td style="margin-left:10%;">
+                                <span><%=rows[0].id%></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                이름
+                            </td>
+                            <td style="margin-left:10%;">
+                                <span><%=rows[0].uname%></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                닉네임
+                            </td>
+                            <td style="margin-left:10%;">
+                                <span><%=rows[0].nick%></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                생일
+                            </td>
+                            <td style="margin-left:10%;">
+                                <span><%=rows[0].birthF%></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                전화번호
+                            </td>
+                            <td style="margin-left:10%;">
+                                <span><%=rows[0].phone.slice(0,3)%></span>-<span><%=rows[0].phone.slice(3,7)%></span>-<span><%=rows[0].phone.slice(7)%></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                주소
+                            </td>
+                            <td style="margin-left:10%;">
+                                <span><%=rows[0].address%></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <br>
+                    <a href="/myProfileEdit" style="margin-top:50px"><input type="button" value="내 정보 수정"></a>
+                </div>
             </div>
         </div>
     </body>
-    <script src="commonJS/sideBar.js"></script>
+    <script>
+        window.onload=function(){
+            let menuBtn = document.querySelector('#menuBtn');
+            let sideBar = document.getElementById('sideMenu');
+            let bottomContent = document.getElementById('guestContent');
+            let contentContainer = document.querySelector('#ContentContainer');
+            menuBtn.addEventListener('click',function(){
+                sideBar.classList.toggle('active');
+                bottomContent.classList.toggle('active');
+                contentContainer.classList.toggle('active');
+            })
+        }
+    </script>
 </html>
