@@ -67,7 +67,7 @@ header{
 .ContentContainer{
     position:relative;
     display:flex;
-    width:70%;
+    width:100%;
     left:240px;
     transition:0.5s ease;
 }
@@ -76,6 +76,11 @@ header{
 .ContentContainer.active {
     left:45px;
     transition: 0.5s ease;
+}
+
+.ContentField{
+    max-width:100%;
+    min-width:700px;
 }
 
 .side-container{
